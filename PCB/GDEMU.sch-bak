@@ -1,0 +1,136 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L ATSAM3U4EA-AU:ATSAM3U4EA-AU U?
+U 1 1 60E9A68D
+P 1500 1550
+F 0 "U?" H 2900 1937 60  0000 C CNN
+F 1 "ATSAM3U4EA-AU" H 2900 1831 60  0000 C CNN
+F 2 "LQFP144_ATM" H 2900 1790 60  0001 C CNN
+F 3 "" H 1500 1550 60  0000 C CNN
+	1    1500 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L ATSAM3U4EA-AU:ATSAM3U4EA-AU U?
+U 2 1 60EA3E2C
+P 5300 1450
+F 0 "U?" H 6100 1837 60  0000 C CNN
+F 1 "ATSAM3U4EA-AU" H 6100 1731 60  0000 C CNN
+F 2 "LQFP144_ATM" H 6700 1690 60  0001 C CNN
+F 3 "" H 5300 1450 60  0000 C CNN
+	2    5300 1450
+	1    0    0    -1  
+$EndComp
+$Comp
+L ATSAM3U4EA-AU:ATSAM3U4EA-AU U?
+U 3 1 60EAC254
+P 8350 1400
+F 0 "U?" H 9678 -147 60  0000 L CNN
+F 1 "ATSAM3U4EA-AU" H 9678 -253 60  0000 L CNN
+F 2 "LQFP144_ATM" H 9750 1640 60  0001 C CNN
+F 3 "" H 8350 1400 60  0000 C CNN
+	3    8350 1400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x07 J?
+U 1 1 60EB4E13
+P 4800 6900
+F 0 "J?" V 4764 6512 50  0000 R CNN
+F 1 "Conn_01x07" V 4673 6512 50  0000 R CNN
+F 2 "" H 4800 6900 50  0001 C CNN
+F 3 "~" H 4800 6900 50  0001 C CNN
+	1    4800 6900
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5000 7100 5500 7100
+Wire Wire Line
+	5000 7000 5500 7000
+Wire Wire Line
+	5000 6900 5500 6900
+Wire Wire Line
+	5000 6800 5500 6800
+Wire Wire Line
+	5000 6700 5500 6700
+Wire Wire Line
+	5000 6600 5500 6600
+Wire Wire Line
+	8350 2500 7850 2500
+Text Label 7850 2500 0    50   ~ 0
+VIN
+Wire Wire Line
+	1500 2250 950  2250
+Text Label 950  2250 0    50   ~ 0
+TDI
+Text Label 5500 7100 2    50   ~ 0
+TDI
+Wire Wire Line
+	4300 1650 4900 1650
+Text Label 4900 1650 2    50   ~ 0
+TDO
+Text Label 5500 7000 2    50   ~ 0
+TDO
+Wire Wire Line
+	1500 2350 950  2350
+Text Label 950  2350 0    50   ~ 0
+TMS
+Text Label 5500 6900 2    50   ~ 0
+TMS
+Wire Wire Line
+	1500 2150 950  2150
+Text Label 950  2150 0    50   ~ 0
+TCK
+Text Label 5500 6800 2    50   ~ 0
+TCK
+Wire Wire Line
+	4300 2750 4950 2750
+Text Label 4950 2750 2    50   ~ 0
+RESET_n
+Text Label 5500 6700 2    50   ~ 0
+RESET_n
+$Comp
+L power:GND #PWR?
+U 1 1 60F09B50
+P 5500 6600
+F 0 "#PWR?" H 5500 6350 50  0001 C CNN
+F 1 "GND" H 5505 6427 50  0000 C CNN
+F 2 "" H 5500 6600 50  0001 C CNN
+F 3 "" H 5500 6600 50  0001 C CNN
+	1    5500 6600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:+3.3V #PWR?
+U 1 1 60F0DD83
+P 4550 7100
+F 0 "#PWR?" H 4550 6950 50  0001 C CNN
+F 1 "+3.3V" H 4565 7273 50  0000 C CNN
+F 2 "" H 4550 7100 50  0001 C CNN
+F 3 "" H 4550 7100 50  0001 C CNN
+	1    4550 7100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5050 7400 5050 7200
+Wire Wire Line
+	5050 7200 5000 7200
+Wire Wire Line
+	4550 7100 4550 7400
+Wire Wire Line
+	4550 7400 5050 7400
+$EndSCHEMATC
