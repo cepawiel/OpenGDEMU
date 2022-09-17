@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "sam3u.h": "c",
+        "sam3u4e.h": "c",
+        "pio.h": "c",
+        "sleep.h": "c",
+        "system_sam3u.h": "c",
+        "cstdio": "cpp",
+        "cstdlib": "cpp",
+        "assert.h": "c",
+        "umm_malloc.h": "c"
+    }
+}

@@ -1,0 +1,141 @@
+# -------------------------------------------------------------------------- #
+#
+# Copyright (C) 1991-2013 Altera Corporation
+# Your use of Altera Corporation's design tools, logic functions 
+# and other software and tools, and its AMPP partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Altera Program License 
+# Subscription Agreement, Altera MegaCore Function License 
+# Agreement, or other applicable license agreement, including, 
+# without limitation, that your use is for the sole purpose of 
+# programming logic devices manufactured by Altera and sold by 
+# Altera or its authorized distributors.  Please refer to the 
+# applicable agreement for further details.
+#
+# -------------------------------------------------------------------------- #
+#
+# Quartus II 32-bit
+# Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
+# Date created = 22:05:18  November 22, 2021
+#
+# -------------------------------------------------------------------------- #
+#
+# Notes:
+#
+# 1) The default values for assignments are stored in the file:
+#		OpenGDEMU_assignment_defaults.qdf
+#    If this file doesn't exist, see file:
+#		assignment_defaults.qdf
+#
+# 2) Altera recommends that you do not modify this file. This
+#    file is updated automatically by the Quartus II software
+#    and any changes you make may be lost or overwritten.
+#
+# -------------------------------------------------------------------------- #
+
+
+set_global_assignment -name FAMILY "Cyclone II"
+set_global_assignment -name DEVICE EP2C5T144C8
+set_global_assignment -name TOP_LEVEL_ENTITY OpenGDEMUTop
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION "13.0 SP1"
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "22:05:18  NOVEMBER 22, 2021"
+set_global_assignment -name LAST_QUARTUS_VERSION "13.0 SP1"
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
+set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
+set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
+set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
+set_global_assignment -name IOBANK_VCCIO 3.3V -section_id 1
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name CYCLONEII_CONFIGURATION_SCHEME "PASSIVE SERIAL"
+set_global_assignment -name USE_CONFIGURATION_DEVICE ON
+set_global_assignment -name GENERATE_RBF_FILE ON
+set_global_assignment -name RESERVE_ALL_UNUSED_PINS "AS INPUT TRI-STATED WITH WEAK PULL-UP"
+set_global_assignment -name RESERVE_ASDO_AFTER_CONFIGURATION "USE AS REGULAR IO"
+set_location_assignment PIN_7 -to DC_LRCK
+set_location_assignment PIN_8 -to DC_CDCLK
+set_location_assignment PIN_21 -to CLK_11_2896_MHz
+set_location_assignment PIN_143 -to DC_ADDR[2]
+set_location_assignment PIN_139 -to DC_ADDR[1]
+set_location_assignment PIN_135 -to DC_ADDR[0]
+set_location_assignment PIN_136 -to DC_CSn[0]
+set_location_assignment PIN_144 -to DC_CSn[1]
+set_location_assignment PIN_142 -to DC_SDAT
+set_location_assignment PIN_137 -to DC_INTRQ
+set_location_assignment PIN_134 -to DC_IORDY
+set_location_assignment PIN_133 -to DC_WRn
+set_location_assignment PIN_129 -to DC_DMACKn
+set_location_assignment PIN_125 -to DC_DMARQ
+set_location_assignment PIN_126 -to DC_RDn
+set_location_assignment PIN_122 -to DC_DATA[15]
+set_location_assignment PIN_121 -to DC_DATA[0]
+set_location_assignment PIN_120 -to DC_DATA[14]
+set_location_assignment PIN_119 -to DC_DATA[1]
+set_location_assignment PIN_118 -to DC_DATA[12]
+set_location_assignment PIN_115 -to DC_DATA[3]
+set_location_assignment PIN_114 -to DC_DATA[13]
+set_location_assignment PIN_113 -to DC_DATA[2]
+set_location_assignment PIN_112 -to DC_DATA[10]
+set_location_assignment PIN_104 -to DC_DATA[5]
+set_location_assignment PIN_103 -to DC_DATA[8]
+set_location_assignment PIN_101 -to DC_DATA[7]
+set_location_assignment PIN_100 -to DC_RSTn
+set_location_assignment PIN_99 -to DC_DATA[11]
+set_location_assignment PIN_97 -to DC_DATA[4]
+set_location_assignment PIN_96 -to DC_DATA[9]
+set_location_assignment PIN_94 -to DC_DATA[6]
+set_location_assignment PIN_74 -to MCU_NRE
+set_location_assignment PIN_73 -to MCU_DATA[5]
+set_location_assignment PIN_72 -to MCU_DATA[1]
+set_location_assignment PIN_71 -to MCU_DATA[0]
+set_location_assignment PIN_70 -to CLK_48_MHz
+set_location_assignment PIN_69 -to MCU_DATA[2]
+set_location_assignment PIN_67 -to MCU_DATA[3]
+set_location_assignment PIN_65 -to MCU_DATA[4]
+set_location_assignment PIN_64 -to MCU_DATA[15]
+set_location_assignment PIN_24 -to MCU_NWE
+set_location_assignment PIN_63 -to MCU_NBS[0]
+set_location_assignment PIN_60 -to MCU_ADDR[1]
+set_location_assignment PIN_59 -to MCU_IRQn
+set_location_assignment PIN_58 -to MCU_RSTn
+set_location_assignment PIN_57 -to MCU_NBS[1]
+set_location_assignment PIN_55 -to MCU_NCS
+set_location_assignment PIN_53 -to MCU_DATA[7]
+set_location_assignment PIN_52 -to MCU_DATA[6]
+set_location_assignment PIN_48 -to MCU_ADDR[2]
+set_location_assignment PIN_47 -to MCU_ADDR[3]
+set_location_assignment PIN_45 -to MCU_ADDR[4]
+set_location_assignment PIN_44 -to MCU_ADDR[5]
+set_location_assignment PIN_43 -to MCU_ADDR[6]
+set_location_assignment PIN_42 -to MCU_ADDR[7]
+set_location_assignment PIN_41 -to MCU_ADDR[8]
+set_location_assignment PIN_32 -to MCU_DATA[14]
+set_location_assignment PIN_31 -to MCU_DATA[13]
+set_location_assignment PIN_30 -to MCU_DATA[12]
+set_location_assignment PIN_28 -to MCU_DATA[11]
+set_location_assignment PIN_27 -to MCU_DATA[10]
+set_location_assignment PIN_26 -to MCU_DATA[9]
+set_location_assignment PIN_25 -to MCU_DATA[8]
+set_location_assignment PIN_132 -to DC_EMPH
+set_location_assignment PIN_141 -to DC_SCK
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
+set_global_assignment -name QIP_FILE ../sources/ip/Audio_PLL.qip
+set_global_assignment -name QIP_FILE ../sources/ip/Double_PLL.qip
+set_global_assignment -name QIP_FILE ../sources/ip/FIFO.qip
+set_global_assignment -name VERILOG_FILE ../sources/OpenGDEMUTop.v
+set_global_assignment -name VERILOG_FILE ../spinalhdl/OpenGDEMU.v
+set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
+set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH OpenGDEMU_tb -section_id eda_simulation
+set_global_assignment -name EDA_TEST_BENCH_NAME OpenGDEMU_tb -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id OpenGDEMU_tb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME OpenGDEMU_tb -section_id OpenGDEMU_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE sources/OpenGDEMU_tb.v -section_id OpenGDEMU_tb
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

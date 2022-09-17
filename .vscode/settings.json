@@ -1,0 +1,7 @@
+{
+    "cortex-debug.variableUseNaturalFormat": false,
+    "cmake.loggingLevel": "debug",
+    "files.associations": {
+        "random": "cpp"
+    }
+}

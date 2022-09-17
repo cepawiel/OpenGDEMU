@@ -1,0 +1,27 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "cwd": "${workspaceRoot}",
+            "executable": "./build/CPU/app/mainapp.elf",
+            "name": "Debug SAM3U",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "configFiles": ["openocd_gdemu.cfg"],
+            "gdbPath": "gdb-multiarch",
+            "objdumpPath": "arm-none-eabi-objdump",
+            // "armToolchainPath": "C:/Program Files (x86)/GNU Arm Embedded Toolchain/10 2020-q4-major/bin",
+            // "device": "MK22FN512xxx12",
+            "interface": "swd",
+            // "serialNumber": "", // add J-Link serial number if having multiple attached the same time.
+            "runToEntryPoint": "main",
+            // "svdFile": "${workspaceRoot}/device/MK22F51212.svd",
+            // "showDevDebugOutput": "parsed",
+            "preLaunchTask" : "Kill OpenOCD"
+        }
+    ]
+}

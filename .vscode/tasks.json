@@ -1,0 +1,14 @@
+{
+    "tasks": [
+        {
+            "label": "Kill OpenOCD",
+            "command": "killall openocd || true",
+            "type": "shell",
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+                "close": true
+            }
+        }
+    ]
+}

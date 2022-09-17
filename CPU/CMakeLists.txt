@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.5)
+project(cpu)
+
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -mthumb -mcpu=cortex-m3 -mlong-calls -fdata-sections -ffunction-sections -g -Og -nostdlib -fno-exceptions -fno-use-cxa-atexit -fno-rtti")
+SET(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wall -mthumb -mcpu=cortex-m3 -mlong-calls -fdata-sections -ffunction-sections -g  -Og -nostdlib -fno-exceptions")
+SET(CMAKE_ASM_FLAGS  "${CMAKE_ASM_FLAGS} -Wall -mthumb -mcpu=cortex-m3 -mlong-calls -fdata-sections -ffunction-sections -g  -Og -nostdlib -fno-exceptions")
+
+add_subdirectory(cmsis)
+add_subdirectory(rtos)
+add_subdirectory(drivers)
+add_subdirectory(submodules)
+add_subdirectory(fpga)
+add_subdirectory(app)
+add_subdirectory(log)
+add_subdirectory(test)
