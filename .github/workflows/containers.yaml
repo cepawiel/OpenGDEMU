@@ -55,10 +55,6 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }}
             type=sha
 
-      - run: pwd && ls -la
-      - run: cd ./Containers/QuartusII && wget http://download.altera.com/akdlm/software/acdsinst/13.0sp1/232/ib_tar/Quartus-web-13.0.1.232-linux.tar
-      - run: pwd && ls -la
-
       - name: Build Quartus II 13.0 SP1 Container
         id: quartus-container
         uses: docker/build-push-action@v2
@@ -112,6 +108,5 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./Containers/SpinalHDL
-          # file: Containers/QuartusII/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           # push: true
