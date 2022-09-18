@@ -4,7 +4,7 @@ FROM $IMAGE AS common
 
 WORKDIR /work
 
-RUN apt update -qq && apt upgrade -y && apt install -y --no-install-recommends \
+RUN apt update && apt upgrade -y && apt install -y --no-install-recommends \
       apt-utils \
       apt-transport-https \
       ca-certificates \
@@ -132,7 +132,7 @@ RUN cd /tmp && git clone https://github.com/SpinalHDL/SpinalTemplateSbt && \
     cd /tmp/SpinalTemplateSbt && mill mylib.runMain mylib.MyTopLevelVerilog \
      && cd ../ && rm -rf /tmp/SpinalTemplateSbt
 
-ENV USER_NAME=coltonp
+ENV USER_NAME=spinalhdl
 ENV USER_UID=1000
 ENV USER_GID=1000
 
