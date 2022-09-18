@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y libc6 \
 
 FROM base as install
 # ADD http://download.altera.com/akdlm/software/acdsinst/13.0sp1/232/ib_tar/Quartus-web-13.0.1.232-linux.tar /installer
-# ADD Quartus-web-13.0.1.232-linux.tar /installer
+ADD Quartus-web-13.0.1.232-linux.tar /installer
 RUN mkdir -p /opt/quartus && /installer/setup.sh --mode unattended --installdir /opt/quartus
 
 FROM base
