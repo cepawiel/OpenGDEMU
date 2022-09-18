@@ -57,11 +57,15 @@ jobs:
 
       - run: pwd && ls -la
 
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+
       - name: Build Quartus II 13.0 SP1 Container
         id: quartus-container
         uses: docker/build-push-action@v2
         with:
-          context: "{{defaultContext}}:Containers/QuartusII"
+          context: "{{defaultContext}}#${{ steps.branch-name.outputs.current_branch }}:Containers/QuartusII"
           # file: Containers/QuartusII/Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           # push: true
