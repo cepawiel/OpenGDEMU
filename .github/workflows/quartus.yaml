@@ -57,10 +57,6 @@ jobs:
 
       - run: pwd && ls -la
 
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v6
-
       - name: Build Quartus II 13.0 SP1 Container
         id: quartus-container
         uses: docker/build-push-action@v2
