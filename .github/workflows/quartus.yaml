@@ -56,6 +56,8 @@ jobs:
             type=sha
 
       - run: pwd && ls -la
+      - run: cd ./Containers/QuartusII && wget http://download.altera.com/akdlm/software/acdsinst/13.0sp1/232/ib_tar/Quartus-web-13.0.1.232-linux.tar
+      - run: pwd && ls -la
 
       - name: Build Quartus II 13.0 SP1 Container
         id: quartus-container
