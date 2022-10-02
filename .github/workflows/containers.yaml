@@ -56,7 +56,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ghcr.io/OpenGDEMU/quartusii
+            ghcr.io/${{ github.repository }}/quartus2
           tags: |
             type=raw,value=latest,enable=${{ env.IS_RELEASE }}
             type=sha
@@ -110,7 +110,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            ghcr.io/OpenGDEMU/spinalhdl
+            ghcr.io/${{ github.repository }}/spinalhdl
           tags: |
             type=raw,value=latest,enable=${{ env.IS_RELEASE }}
             type=sha
