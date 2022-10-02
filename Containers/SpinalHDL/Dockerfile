@@ -41,7 +41,7 @@ RUN git clone https://github.com/ghdl/ghdl && cd ghdl \
  && cd ..
 
   # Build Verilator
-RUN git clone http://git.veripool.org/git/verilator && cd verilator \
+RUN git clone https://github.com/verilator/verilator && cd verilator \
  && git checkout v4.028 \
  && unset VERILATOR_ROOT \
  && autoconf \
