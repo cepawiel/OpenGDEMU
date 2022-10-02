@@ -23,7 +23,7 @@ jobs:
 
     env:
       # IS_RELEASE: ${{ (needs.check-secrets.outputs.github-token-exists == 'true') && (github.ref == 'refs/heads/main') && (github.event_name != 'pull_request') }}
-      IS_RELEASE: ${ (needs.check-secrets.outputs.github-token-exists == 'true') && (github.event_name != 'pull_request') }
+      IS_RELEASE: ${{ (needs.check-secrets.outputs.github-token-exists == 'true') && (github.event_name != 'pull_request') }}
     
     steps:
       - name: Checkout Source
@@ -77,7 +77,7 @@ jobs:
 
     env:
       # IS_RELEASE: ${{ (needs.check-secrets.outputs.github-token-exists == 'true') && (github.ref == 'refs/heads/main') && (github.event_name != 'pull_request') }}
-      IS_RELEASE: ${ (needs.check-secrets.outputs.github-token-exists == 'true') && (github.event_name != 'pull_request') }
+      IS_RELEASE: ${{ (needs.check-secrets.outputs.github-token-exists == 'true') && (github.event_name != 'pull_request') }}
     
     steps:
       - name: Checkout Source
@@ -124,4 +124,3 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           push: ${{ env.IS_RELEASE }}
 
-          
