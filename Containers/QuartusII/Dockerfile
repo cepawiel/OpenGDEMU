@@ -5,10 +5,13 @@ RUN apt-get update && apt-get install -y libc6 \
     libxft2 libxext6 libxi6 libncurses5 libgtk2.0-0 wget
 
 FROM base as install
-RUN mkdir -p /installer && cd /installer && wget -q -c http://download.altera.com/akdlm/software/acdsinst/13.0sp1/232/ib_tar/Quartus-web-13.0.1.232-linux.tar -O - | tar -x
-RUN cd /installer && ls -la && false
-RUN mkdir -p /opt/quartus && /installer/setup.sh --mode unattended --installdir /opt/quartus
-RUN rm -rf /installer
+RUN mkdir -p /installer \
+    && cd /installer \
+    && wget -q -c http://download.altera.com/akdlm/software/acdsinst/13.0sp1/232/ib_tar/Quartus-web-13.0.1.232-linux.tar -O - | tar -x \
+    && ls -la \
+    && mkdir -p /opt/quartus \
+    && /installer/setup.sh --mode unattended --installdir /opt/quartus \
+    && rm -rf /installer
 
 FROM base
 COPY --from=install /opt/quartus /opt/quartus
