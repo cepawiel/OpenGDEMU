@@ -1,0 +1,92 @@
+/**
+ * \file
+ *
+ * \brief Linker script for ATxmega64B3 USB DFU FLIP bootloader
+ *
+ * Copyright (c) 2011 - 2018 Microchip Technology Inc. and its subsidiaries.
+ *
+ * \asf_license_start
+ *
+ * \page License
+ *
+ * Subject to your compliance with these terms, you may use Microchip
+ * software and any derivatives exclusively with Microchip products.
+ * It is your responsibility to comply with third party license terms applicable
+ * to your use of third party software (including open source software) that
+ * may accompany Microchip software.
+ *
+ * THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES,
+ * WHETHER EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE,
+ * INCLUDING ANY IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY,
+ * AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL MICROCHIP BE
+ * LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE, INCIDENTAL OR CONSEQUENTIAL
+ * LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND WHATSOEVER RELATED TO THE
+ * SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS BEEN ADVISED OF THE
+ * POSSIBILITY OR THE DAMAGES ARE FORESEEABLE.  TO THE FULLEST EXTENT
+ * ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN ANY WAY
+ * RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
+ * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
+ *
+ * \asf_license_stop
+ *
+ */
+
+// Set up XLINK
+-ca90
+-w29
+
+// Memory size definitions for convenience
+// The '_..X_' prefix is used by C-SPY as an indication that the label should
+// not be displayed in the dissassembly window.
+-D_..X_FLASH_BASE=10002
+-D_..X_CODE_END=10FFF
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+// Code (flash) segments
+-Z(CODE)INTVEC=1007C-1008C
+-P(CODE)BOOT=_..X_FLASH_BASE-_..X_CODE_END
+-P(CODE)CODE=_..X_FLASH_BASE-_..X_CODE_END
+-P(CODE)FARCODE=_..X_FLASH_BASE-_..X_CODE_END
+-Z(CODE)INITTAB=101FF-_..X_CODE_END
+-Z(CODE)NEAR_ID=101FF-_..X_CODE_END
+
+
+-D_..X_SRAM_BASE=2000
+-D_..X_SRAM_TINY_END=FF
+-D_..X_SRAM_NEAR_END=FFFF
+-D_..X_SRAM_FAR_END=FFFFFF
+-D_..X_SRAM_HUGE_END=FFFFFF
+
+/*
+ * Modify the lines below to alter the size of the RSTACK, CSTACK and HEAP
+ * segments. These need to be fine tuned to suit your specific application.
+ */
+-D_..X_CSTACK_SIZE=70 /* 112 bytes for auto variables and register save. */
+-D_..X_RSTACK_SIZE=70  /* 112 bytes for return addresses, equivalent to */
+                        /* 56 levels of calls, including interrupts. */
+-D_..X_NEAR_HEAP_SIZE=1000   /* 4096 bytes of heap. */
+-D_..X_HEAP_SIZE=1000   /* 4096 bytes of heap. */
+-D_..X_FAR_HEAP_SIZE=1000   /* 4096 bytes of heap. */
+-D_..X_HUGE_HEAP_SIZE=1000   /* 4096 bytes of heap. */
+//////////////////////////////////////////////////////////////////////////////
+// Data (SRAM, external ROM or external NV RAM) memory
+-Z(DATA)SRAM_NO_INIT=2000-2001
+-Z(DATA)TINY_I,TINY_Z,TINY_N=_..X_SRAM_BASE-_..X_SRAM_NEAR_END
+-Z(DATA)RSTACK+_..X_RSTACK_SIZE=_..X_SRAM_BASE-_..X_SRAM_NEAR_END
+-Z(DATA)NEAR_I,NEAR_Z,NEAR_N,NEAR_C=_..X_SRAM_BASE-_..X_SRAM_NEAR_END
+-Z(DATA)NEAR_HEAP+_..X_NEAR_HEAP_SIZE=_..X_SRAM_BASE-_..X_SRAM_NEAR_END
+//-Z(DATA)FAR_I=[10000-_..X_SRAM_FAR_END]/10000
+-Z(DATA)CSTACK+_..X_CSTACK_SIZE=[_..X_SRAM_BASE-_..X_SRAM_FAR_END]/10000
+-Z(DATA)HEAP+_..X_HEAP_SIZE=[_..X_SRAM_BASE-_..X_SRAM_FAR_END]/10000
+-Z(DATA)IOSTREAM_N#[_..X_SRAM_BASE-_..X_SRAM_FAR_END]/10000
+-Z(DATA)FAR_Z,FAR_N,FAR_C=[_..X_SRAM_BASE-_..X_SRAM_FAR_END]/10000
+-Z(DATA)FAR_HEAP+_..X_FAR_HEAP_SIZE=_..X_SRAM_BASE-_..X_SRAM_FAR_END
+-Z(DATA)HUGE_I,HUGE_Z,HUGE_N,HUGE_C=_..X_SRAM_BASE-_..X_SRAM_HUGE_END
+-Z(DATA)HUGE_HEAP+_..X_HUGE_HEAP_SIZE=_..X_SRAM_BASE-_..X_SRAM_HUGE_END
+
+
+
+
