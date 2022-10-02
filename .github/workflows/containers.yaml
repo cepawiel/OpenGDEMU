@@ -1,4 +1,4 @@
-name: Build Docker Images
+name: Build Container Images
 
 on: [push]
 
