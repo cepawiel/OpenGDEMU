@@ -1,6 +1,0 @@
-<workspace>
-	<batchBuild></batchBuild>
-	<project>
-		<path>$WS_DIR$\ov7740_imagesensor_capture_example_flash.ewp</path>
-	</project>
-</workspace>
