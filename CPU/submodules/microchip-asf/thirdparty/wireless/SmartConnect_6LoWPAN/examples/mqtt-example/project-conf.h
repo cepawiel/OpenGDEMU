@@ -1,8 +1,0 @@
-#ifndef PROJECT_CONF_H_
-#define PROJECT_CONF_H_
-
-#define THSQ_CONF_NETSTACK      THSQ_CONF_NULLRDC
-//#define THSQ_CONF_NETSTACK      THSQ_CONF_DROWSIE
-
-#endif /* PROJECT_CONF_H_ */
-

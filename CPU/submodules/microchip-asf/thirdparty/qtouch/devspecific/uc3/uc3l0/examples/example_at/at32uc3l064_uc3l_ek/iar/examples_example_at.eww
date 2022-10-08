@@ -1,6 +1,0 @@
-<workspace>
-	<batchBuild></batchBuild>
-	<project>
-		<path>$WS_DIR$\examples_example_at.ewp</path>
-	</project>
-</workspace>

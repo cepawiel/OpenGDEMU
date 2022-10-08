@@ -1,6 +1,0 @@
-<workspace>
-	<batchBuild></batchBuild>
-	<project>
-		<path>$WS_DIR$\apps_prime_service_serial_flash.ewp</path>
-	</project>
-</workspace>

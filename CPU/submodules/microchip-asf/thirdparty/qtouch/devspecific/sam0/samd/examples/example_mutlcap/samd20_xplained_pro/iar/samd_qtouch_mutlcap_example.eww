@@ -1,6 +1,0 @@
-<workspace>
-	<batchBuild></batchBuild>
-	<project>
-		<path>$WS_DIR$\samd_qtouch_mutlcap_example_flash.ewp</path>
-	</project>
-</workspace>
