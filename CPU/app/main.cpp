@@ -1,5 +1,4 @@
 #include <log.h>
-#define TRICE_FILE Id(46100)
 
 #include <argon/argon.h>
 
@@ -7,8 +6,8 @@
 #include <drivers/gpio.h>
 #include <drivers/wdt.h>
 
-#include <string.h>
-#include <string>
+// #include <string.h>
+// #include <string>
 
 #include "cyclone2.h"
 
@@ -37,10 +36,11 @@ extern "C" {
 }
 
 void blink_thread(void * params) {
-    TRICE( Id(46152), "info:Starting Blink Thread\n" );
+    INFO("Starting Blink Thread\n" );
     GPIO led(PIOB, PIO_PB18);
     led.SetOutput(LOW, DISABLE, DISABLE);
     while(1) {
+        // LOG("Blink Loop\n");
         led.Set();
         // TRICE( Id(33172), "trace:LED On\n" );
         Ar::Thread::sleep(500);
@@ -49,7 +49,7 @@ void blink_thread(void * params) {
         Ar::Thread::sleep(500);
     }
 }
-Ar::ThreadWithStack<512> blinkThread("my", blink_thread, 0, 100, kArStartThread);
+Ar::ThreadWithStack<512> blinkThread("led_blink", blink_thread, 0, 100, kArStartThread);
 
 
 
@@ -154,23 +154,22 @@ int __attribute__((optimize("O0"))) main() {
 
     PowerManagementController::EnablePeripheralClock(ID_UART);
     loggingInit();
-    TRICE( Id(34206), "info:Booting openGDEMU\n" );  
-    TRICE_S( Id(39562), "info:Build Info: %s", __DATE__ );
-    TRICE_S( Id(54236), "info: at %s\n",__TIME__);
+    INFO("Booting openGDEMU\n" );  
+    INFO("Build Info: " __DATE__ " at " __TIME__ "\n");
     
-    TRICE( Id(46126), "info:Enabling PeripheralClocks\n" );
+    INFO("Enabling PeripheralClocks\n" );
     PowerManagementController::EnablePeripheralClock(ID_PIOA);
     PowerManagementController::EnablePeripheralClock(ID_PIOB);
     PowerManagementController::EnablePeripheralClock(ID_PWM);
-    PowerManagementController::EnablePeripheralClock(ID_SMC);
-    
+    PowerManagementController::EnablePeripheralClock(ID_SMC);  
+
     GPIO fpgaReset(PIOA, PIO_PA30);
     fpgaReset.SetOutput(LOW, DISABLE, DISABLE);
 
-    TRICE( Id(49512), "info:Initializing Cyclone2...\n");
+    INFO("Initializing Cyclone2...\n");
     bool configured = Cyclone2::Init();
     if (configured == false) {
-        TRICE( Id(34703), "err:Failed to Configure Cyclone2\n");
+        ERROR("Failed to Configure Cyclone2\n");
         __BKPT();
     }
 
@@ -183,28 +182,28 @@ int __attribute__((optimize("O0"))) main() {
     while(!irq.Get());
 
     // High Level
-    TRICE( Id(46082), "info:Setting Up FPGA IRQ\n");
+    INFO("Setting Up FPGA IRQ\n");
     irq.ConfigureInterrupt(PIO_IT_AIME | PIO_IT_EDGE);
     irq.EnableInterrupt();
     NVIC_EnableIRQ(PIOA_IRQn); 
 
     uint64_t fpgaEpoch = OpenGDEMU_FPGA::GetFPGABuildEpoch();
-    TRICE( Id(48362), "info:FPGA Build Epoch %lld\n", fpgaEpoch);
+    INFO("FPGA Build Epoch %lld\n", fpgaEpoch);
 
     for(int i = 0; i < 10; i++) asm("nop");
 
     // Test Read/Write Reg
-    TRICE( Id(45036), "info:Testing FPGA RW Register\n");
+    INFO("Testing FPGA RW Register\n");
     for(uint32_t i = 0; i < 0xFFFF; i++) {
         OpenGDEMU_FPGA::WriteTest(i);
         uint16_t a = OpenGDEMU_FPGA::ReadTest();
         if (a != i) {
-            TRICE( Id(39660), "err:FPGA read 0x%X when 0x%X was expected\n", a, i);
+            ERROR("FPGA read 0x%X when 0x%X was expected\n", a, i);
             __BKPT();
         }
     }
     
-    TRICE( Id(59212), "info:Starting Scheduler\n");
+    INFO("Starting Scheduler\n");
     ar_kernel_run();
 
     while(1) {};

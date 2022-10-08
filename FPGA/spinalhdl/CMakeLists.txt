@@ -20,6 +20,7 @@ add_custom_command(
     DEPENDS
         ${SPINALHDL_IMAGE_HASH}
         ${spinal_SOURCES}
+        build.sc
     )
 
 add_custom_target(spinalhdl_gen DEPENDS ${GENERATED_VERILOG_OUTPUT})

@@ -2,7 +2,6 @@ project(log)
 
 add_library(${PROJECT_NAME} 
     src/log.cpp
-    src/trice.c
     )
 
 target_link_libraries(${PROJECT_NAME} 
@@ -15,12 +14,11 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE ${PROJECT_SOURCE_DIR}/src
 )
 
-target_compile_definitions(${PROJECT_NAME} PUBLIC
-    TRICE_UART
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    NANOPRINTF_USE_FIELD_WIDTH_FORMAT_SPECIFIERS=0
+    NANOPRINTF_USE_PRECISION_FORMAT_SPECIFIERS=0
+    NANOPRINTF_USE_FLOAT_FORMAT_SPECIFIERS=0
+    NANOPRINTF_USE_LARGE_FORMAT_SPECIFIERS=0
+    NANOPRINTF_USE_BINARY_FORMAT_SPECIFIERS=0
+    NANOPRINTF_USE_WRITEBACK_FORMAT_SPECIFIERS=0
 )
-
-add_custom_target(
-    generateTrice
-    COMMAND touch til.json && /home/coltonp/go/bin/trice update -src ${PROJECT_SOURCE_DIR}/../
-)
-add_dependencies(log generateTrice)

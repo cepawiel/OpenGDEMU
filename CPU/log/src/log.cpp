@@ -1,3 +1,6 @@
+#define NANOPRINTF_IMPLEMENTATION
+#include "nanoprintf.h"
+
 #include "log.h"
 
 #include <drivers/uart.h>
@@ -5,23 +8,55 @@
 
 ATSAM3U::SAM_UART debugOutput(UART);
 
-void loggingInit() {
+// char buffer[256];
+
+extern "C" {
+    void loggingInit() {
     debugOutput.Init(115200, UART_MR_PAR_NO, SystemCoreClock);
     debugOutput.EnableTX();
 }
 
-uint32_t loggingUARTTXEmpty(void) {
-    return debugOutput.IsTXEmpty();
-}
 
-void loggingUARTWrite(uint8_t v) {
-    debugOutput.Write(v);
-}
+    void putchar_(int c, void *ctx) {
+        if(c == '\n') {
+            putchar_('\r', ctx);
+        }
 
-void loggingUARTEnableTxEmptyInterrupt(void) {
-    asm("bkpt");
-}
+        while(!debugOutput.IsTXReady()) {}
+        debugOutput.Write(c);
+        // ATSAM3U::SAM_UART * output = (ATSAM3U::SAM_UART *) ctx;
+        // output->Write(c);
+    }
 
-void loggingUARTDisableTxEmptyInterrupt(void) {
-    asm("bkpt");
+    int DEBUG(char const *fmt, ...) {
+        va_list val;
+        va_start(val, fmt);
+        int const rv = npf_vpprintf(&putchar_, &debugOutput, fmt, val);
+        va_end(val);
+        return rv;
+    }
+
+    int INFO(char const *fmt, ...) {
+        va_list val;
+        va_start(val, fmt);
+        int const rv = npf_vpprintf(&putchar_, &debugOutput, fmt, val);
+        va_end(val);
+        return rv;
+    }
+
+    int WARN(char const *fmt, ...) {
+        va_list val;
+        va_start(val, fmt);
+        int const rv = npf_vpprintf(&putchar_, &debugOutput, fmt, val);
+        va_end(val);
+        return rv;
+    }
+
+    int ERROR(char const *fmt, ...) {
+        va_list val;
+        va_start(val, fmt);
+        int const rv = npf_vpprintf(&putchar_, &debugOutput, fmt, val);
+        va_end(val);
+        return rv;
+    }
 }

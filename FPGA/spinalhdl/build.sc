@@ -1,6 +1,6 @@
 import mill._, scalalib._
 
-val spinalVersion = "1.6.4"
+val spinalVersion = "1.7.3"
 
 object opengdemu extends ScalaModule {
   Console.println("OpenGDEMU ScalaModule")

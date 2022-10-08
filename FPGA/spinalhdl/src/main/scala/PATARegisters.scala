@@ -290,12 +290,13 @@ case class PATARegisters(bus : PATAInterface, deviceID : Int) extends Area {
                                     
                 }
             }
-            // when (bus.ADDR === U"111") {
-            //     // Drive Address Register
-            //     when (RD) {
-            //         bus.DATA_OUT        := "16'x5A5A"
-            //     }
-            // }
+            when (bus.ADDR === U"111") {
+                // DBG
+                when (RD) {
+                    bus.DATA_OUT(15 downto 11)       := "5'b00000"
+                    bus.DATA_OUT(10 downto 0)        := readFIFOStream.io.occupancy.asBits
+                }
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
 #include <log.h>
-#define TRICE_FILE Id(46100)
 
 #include "PATADevice.h"
 
@@ -19,7 +18,7 @@ PATADevice::~PATADevice() {
 }
 
 void PATADevice::ThreadLoop() {
-    TRICE( Id(46599), "info:Starting Thread for PATADevice\n" ); 
+    INFO("Starting Thread for PATADevice\n"); 
     while(true) {
         // m_CommandPending = m_ideRegs.GetCommand(m_Regs);
         NVIC_DisableIRQ(PIOA_IRQn);

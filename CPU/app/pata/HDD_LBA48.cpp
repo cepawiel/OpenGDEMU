@@ -1,5 +1,4 @@
 #include <log.h>
-#define TRICE_FILE Id(46100)
 
 #include "HDD_LBA48.h"
 
@@ -14,7 +13,7 @@ HDD_LBA48::~HDD_LBA48() {
 }
 
 void HDD_LBA48::OnCommand() {
-    TRICE( Id(35937), "trace:HDD_LBA48 CMD: 0x%X\n", m_Regs.Commnand ); 
+    DEBUG("HDD_LBA48 CMD: %X\n", m_Regs.Commnand ); 
     switch (m_Regs.Commnand) {
         case ATACommand::ATA_IdentifyDrive:
             OnIdentifyDrive();
@@ -33,6 +32,14 @@ void HDD_LBA48::OnCommand() {
     
     m_CommandPending = false;
     m_ideRegs.ClearBSYFlag();
+
+    if (1) {
+        uint16_t fifoCount = m_ideRegs.GetReadFIFOCount();
+        while(fifoCount > 0) {
+            DEBUG("fifo count 0x%X\n", fifoCount ); 
+            fifoCount = m_ideRegs.GetReadFIFOCount();
+        }
+    }
 }
 
 void __attribute__((optimize("O0"))) HDD_LBA48::OnIdentifyDrive() {
@@ -99,16 +106,17 @@ void __attribute__((optimize("O0"))) HDD_LBA48::OnReadSectors() {
     }
 
     uint16_t fifoCountBefore = m_ideRegs.GetReadFIFOCount();
-    TRICE( Id(62190), "dbg:fifo count before 0x%X\n", fifoCountBefore ); 
+    DEBUG("fifo count before 0x%X\n", fifoCountBefore ); 
     for(int i = 0; i < 256; i++) {
         m_ideRegs.WriteFIFO(i);
+        // m_ideRegs.WriteFIFO(i);
     }
     uint16_t fifoCountAfter = m_ideRegs.GetReadFIFOCount();
-    TRICE( Id(46010), "dbg:fifo count after 0x%X\n", fifoCountAfter ); 
+    DEBUG("fifo count after 0x%X\n", fifoCountAfter ); 
     
-    for(int i = 0; i < 100000; i++) {
-        asm("nop");
-    }
+    // for(int i = 0; i < 100000; i++) {
+    //     asm("nop");
+    // }
 
     m_ideRegs.SetDRDYFlag();
     m_ideRegs.SetDRQFlag();

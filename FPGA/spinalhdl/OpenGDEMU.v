@@ -1,7 +1,7 @@
-// Generator : SpinalHDL v1.6.4    git head : 598c18959149eb18e5eee5b0aa3eef01ecaa41a1
+// Generator : SpinalHDL v1.7.3    git head : ed8004c489ee8a38c2cab309d0447b543fe9d5b8
 // Component : OpenGDEMU
 
-`timescale 1ns/1ps 
+`timescale 1ns/1ps
 
 module OpenGDEMU (
   input               io_MCU_CLK,
@@ -11,766 +11,1317 @@ module OpenGDEMU (
   input      [7:0]    io_MCU_ADDR,
   input      [15:0]   io_MCU_DATA_IN,
   output reg [15:0]   io_MCU_DATA_OUT,
+  output reg [1:0]    io_MCU_DATA_OUT_EN,
   output              io_MCU_IRQ,
+  input               io_IDE_RSTn,
+  input      [1:0]    io_IDE_CSn,
+  input               io_IDE_WRn,
+  input               io_IDE_RDn,
+  input      [2:0]    io_IDE_ADDR,
+  input      [15:0]   io_IDE_DATA_IN,
+  output     [15:0]   io_IDE_DATA_OUT,
+  output              io_IDE_DATA_OUT_EN,
+  input               io_IDE_DMACKn,
+  output              io_IDE_DMARQ,
+  output              io_IDE_IORDY,
+  output              io_IDE_INTRQ,
   input               io_DC_CDCLK,
   input               io_DC_SCK,
   input               io_DC_SDAT,
   input               io_DC_LRCK,
-  input               io_DC_EMPH,
-  input               io_DC_RST,
-  input      [1:0]    io_DC_CSn,
-  input               io_DC_WR,
-  input               io_DC_RD,
-  input      [2:0]    io_DC_ADDR,
-  input      [15:0]   io_DC_DATA_IN,
-  output     [15:0]   io_DC_DATA_OUT,
-  output              io_DC_DATA_OUT_EN,
-  output              io_DC_DMARQ,
-  input               io_DC_DMACK,
-  output              io_DC_IORDY,
-  output              io_DC_INTRQ
+  input               io_DC_EMPH
 );
 
-  wire                clockArea_slaveDevice_io_mcuBus_RD;
-  wire       [1:0]    clockArea_slaveDevice_io_mcuBus_WR;
-  wire       [5:0]    clockArea_slaveDevice_io_mcuBus_ADDR;
-  wire                io_DC_WR_buffercc_io_dataOut;
-  wire                io_DC_RD_buffercc_io_dataOut;
-  wire       [15:0]   clockArea_slaveDevice_io_pataBus_DATA_OUT;
-  wire                clockArea_slaveDevice_io_pataBus_DATA_OUT_EN;
-  wire                clockArea_slaveDevice_io_pataBus_DMARQ;
-  wire                clockArea_slaveDevice_io_pataBus_IORDY;
-  wire                clockArea_slaveDevice_io_pataBus_INTRQ;
-  wire       [15:0]   clockArea_slaveDevice_io_mcuBus_DATA_OUT;
-  wire                clockArea_slaveDevice_io_mcuBus_IRQ;
+  reg                 clockArea_primary_readFIFOStream_io_push_valid;
+  reg                 clockArea_primary_readFIFOStream_io_pop_ready;
+  reg                 clockArea_primary_readFIFOStream_io_flush;
+  reg                 clockArea_primary_writeFIFOStream_io_push_valid;
+  reg                 clockArea_primary_writeFIFOStream_io_pop_ready;
+  reg                 clockArea_primary_writeFIFOStream_io_flush;
+  reg                 clockArea_secondary_readFIFOStream_io_push_valid;
+  reg                 clockArea_secondary_readFIFOStream_io_pop_ready;
+  reg                 clockArea_secondary_readFIFOStream_io_flush;
+  reg                 clockArea_secondary_writeFIFOStream_io_push_valid;
+  reg                 clockArea_secondary_writeFIFOStream_io_pop_ready;
+  reg                 clockArea_secondary_writeFIFOStream_io_flush;
+  wire                clockArea_primary_readFIFOStream_io_push_ready;
+  wire                clockArea_primary_readFIFOStream_io_pop_valid;
+  wire       [15:0]   clockArea_primary_readFIFOStream_io_pop_payload;
+  wire       [10:0]   clockArea_primary_readFIFOStream_io_occupancy;
+  wire       [10:0]   clockArea_primary_readFIFOStream_io_availability;
+  wire                clockArea_primary_writeFIFOStream_io_push_ready;
+  wire                clockArea_primary_writeFIFOStream_io_pop_valid;
+  wire       [15:0]   clockArea_primary_writeFIFOStream_io_pop_payload;
+  wire       [10:0]   clockArea_primary_writeFIFOStream_io_occupancy;
+  wire       [10:0]   clockArea_primary_writeFIFOStream_io_availability;
+  wire                clockArea_primary_ideDecode_io_DataRegister;
+  wire                clockArea_primary_ideDecode_io_ErrorRegister;
+  wire                clockArea_primary_ideDecode_io_FeaturesRegister;
+  wire                clockArea_primary_ideDecode_io_SectorCountRegister;
+  wire                clockArea_primary_ideDecode_io_LBALowRegister;
+  wire                clockArea_primary_ideDecode_io_LBAMidRegister;
+  wire                clockArea_primary_ideDecode_io_LBAHighRegister;
+  wire                clockArea_primary_ideDecode_io_DeviceRegister;
+  wire                clockArea_primary_ideDecode_io_CommandRegister;
+  wire                clockArea_primary_ideDecode_io_StatusRegister;
+  wire                clockArea_primary_ideDecode_io_DeviceControlRegister;
+  wire                clockArea_primary_ideDecode_io_AlternateStatusRegister;
+  wire                clockArea_primary_ideDecode_io_DebugTestpad;
+  wire                clockArea_secondary_readFIFOStream_io_push_ready;
+  wire                clockArea_secondary_readFIFOStream_io_pop_valid;
+  wire       [15:0]   clockArea_secondary_readFIFOStream_io_pop_payload;
+  wire       [10:0]   clockArea_secondary_readFIFOStream_io_occupancy;
+  wire       [10:0]   clockArea_secondary_readFIFOStream_io_availability;
+  wire                clockArea_secondary_writeFIFOStream_io_push_ready;
+  wire                clockArea_secondary_writeFIFOStream_io_pop_valid;
+  wire       [15:0]   clockArea_secondary_writeFIFOStream_io_pop_payload;
+  wire       [10:0]   clockArea_secondary_writeFIFOStream_io_occupancy;
+  wire       [10:0]   clockArea_secondary_writeFIFOStream_io_availability;
+  wire                clockArea_secondary_ideDecode_io_DataRegister;
+  wire                clockArea_secondary_ideDecode_io_ErrorRegister;
+  wire                clockArea_secondary_ideDecode_io_FeaturesRegister;
+  wire                clockArea_secondary_ideDecode_io_SectorCountRegister;
+  wire                clockArea_secondary_ideDecode_io_LBALowRegister;
+  wire                clockArea_secondary_ideDecode_io_LBAMidRegister;
+  wire                clockArea_secondary_ideDecode_io_LBAHighRegister;
+  wire                clockArea_secondary_ideDecode_io_DeviceRegister;
+  wire                clockArea_secondary_ideDecode_io_CommandRegister;
+  wire                clockArea_secondary_ideDecode_io_StatusRegister;
+  wire                clockArea_secondary_ideDecode_io_DeviceControlRegister;
+  wire                clockArea_secondary_ideDecode_io_AlternateStatusRegister;
+  wire                clockArea_secondary_ideDecode_io_DebugTestpad;
+  reg        [15:0]   _zz_io_MCU_DATA_OUT_2;
+  wire       [1:0]    _zz_io_MCU_DATA_OUT_3;
   wire                clockArea_globalRegsCS;
-  wire                clockArea_masterRegsCS;
-  wire                clockArea_slaveRegsCS;
-  wire                when_OpenGDEMU_l67;
-  wire                when_OpenGDEMU_l67_1;
-  wire                when_OpenGDEMU_l67_2;
-  wire                when_OpenGDEMU_l67_3;
-  reg        [15:0]   _zz_io_MCU_DATA_OUT;
+  wire                clockArea_ideRegsCS;
+  wire                clockArea_idePrimaryRegsCS;
+  wire                clockArea_ideSecondaryRegsCS;
+  reg        [15:0]   clockArea_primary_dataOutput;
+  reg                 clockArea_primary_dataOutputEn;
+  reg        [15:0]   clockArea_primary_mcuDataOutput;
+  wire       [1:0]    clockArea_primary_mcuDataOutputEn;
+  reg                 clockArea_primary_mcuIRQ;
+  wire                clockArea_primary_RD;
+  wire                clockArea_primary_WR;
+  reg                 clockArea_primary_WR_regNext;
+  wire                clockArea_primary_WR_STROBE;
+  reg        [7:0]    clockArea_primary_DEVICE;
+  wire                clockArea_primary_DEV;
+  reg                 clockArea_primary_HOB;
+  reg                 clockArea_primary_SRST;
+  reg                 clockArea_primary_nIEN;
+  reg                 clockArea_primary_BSY;
+  reg                 clockArea_primary_DRDY;
+  reg                 clockArea_primary_DF;
+  reg                 clockArea_primary_DRQ;
+  reg                 clockArea_primary_ERR;
+  reg        [7:0]    clockArea_primary_COMMAND;
+  reg                 clockArea_primary_COMMAND_PEND;
+  reg        [7:0]    clockArea_primary_LBALow;
+  wire                when_IDEDeviceRegs_l59;
+  reg        [7:0]    clockArea_primary_LBALowPrev;
+  reg        [7:0]    clockArea_primary_LBAMid;
+  wire                when_IDEDeviceRegs_l61;
+  reg        [7:0]    clockArea_primary_LBAMidPrev;
+  reg        [7:0]    clockArea_primary_LBAHigh;
+  wire                when_IDEDeviceRegs_l63;
+  reg        [7:0]    clockArea_primary_LBAHighPrev;
+  reg                 clockArea_primary_ABRT;
+  reg        [7:0]    clockArea_primary_Features;
+  reg        [15:0]   clockArea_primary_SectorCount;
+  reg        [15:0]   clockArea_primary_testReg;
+  wire                when_IDEDeviceRegs_l106;
+  reg                 clockArea_primary_SRST_regNext;
+  wire                when_IDEDeviceRegs_l123;
+  wire                when_IDEDeviceRegs_l129;
+  wire                clockArea_primary_dmaTransfer;
+  wire                clockArea_primary_deviceSelected;
+  wire                when_IDEDeviceRegs_l151;
+  wire                when_IDEDeviceRegs_l159;
+  wire                when_IDEDeviceRegs_l170;
+  reg                 clockArea_primary_RD_regNext;
+  wire                when_IDEDeviceRegs_l177;
+  wire                when_IDEDeviceRegs_l185;
+  wire                when_IDEDeviceRegs_l193;
+  wire                when_IDEDeviceRegs_l200;
+  wire                when_IDEDeviceRegs_l219;
+  wire                when_IDEDeviceRegs_l237;
+  wire                when_IDEDeviceRegs_l253;
+  wire                when_IDEDeviceRegs_l269;
+  wire                when_IDEDeviceRegs_l284;
+  wire                when_IDEDeviceRegs_l296;
+  reg                 clockArea_primary_WR_regNext_1;
+  wire                when_IDEDeviceRegs_l320;
+  wire                when_IDEDeviceRegs_l331;
+  wire                when_IDEDeviceRegs_l340;
+  wire                clockArea_primary_irqDelay_0;
+  reg                 clockArea_primary_irqDelay_1;
+  reg                 clockArea_primary_irqDelay_2;
+  reg                 clockArea_primary_irqDelay_3;
+  wire                when_IDEDeviceRegs_l362;
+  wire                when_IDEDeviceRegs_l371;
+  wire                when_IDEDeviceRegs_l389;
+  wire                when_IDEDeviceRegs_l396;
+  wire                when_IDEDeviceRegs_l405;
+  wire                when_IDEDeviceRegs_l407;
+  wire                when_IDEDeviceRegs_l412;
+  wire                when_IDEDeviceRegs_l414;
+  wire                when_IDEDeviceRegs_l419;
+  wire                when_IDEDeviceRegs_l422;
+  wire                when_IDEDeviceRegs_l425;
+  wire                when_IDEDeviceRegs_l430;
+  wire                when_IDEDeviceRegs_l433;
+  wire                when_IDEDeviceRegs_l436;
+  wire                when_IDEDeviceRegs_l441;
+  wire                when_IDEDeviceRegs_l444;
+  wire                when_IDEDeviceRegs_l447;
+  wire                when_IDEDeviceRegs_l452;
+  wire                when_IDEDeviceRegs_l456;
+  wire                when_IDEDeviceRegs_l459;
+  wire                when_IDEDeviceRegs_l464;
+  wire                when_IDEDeviceRegs_l468;
+  wire                when_IDEDeviceRegs_l471;
+  wire                when_IDEDeviceRegs_l476;
+  wire                when_IDEDeviceRegs_l480;
+  wire                when_IDEDeviceRegs_l485;
+  wire                when_IDEDeviceRegs_l489;
+  wire                when_IDEDeviceRegs_l493;
+  reg        [15:0]   clockArea_secondary_dataOutput;
+  reg                 clockArea_secondary_dataOutputEn;
+  reg        [15:0]   clockArea_secondary_mcuDataOutput;
+  wire       [1:0]    clockArea_secondary_mcuDataOutputEn;
+  reg                 clockArea_secondary_mcuIRQ;
+  wire                clockArea_secondary_RD;
+  wire                clockArea_secondary_WR;
+  reg                 clockArea_secondary_WR_regNext;
+  wire                clockArea_secondary_WR_STROBE;
+  reg        [7:0]    clockArea_secondary_DEVICE;
+  wire                clockArea_secondary_DEV;
+  reg                 clockArea_secondary_HOB;
+  reg                 clockArea_secondary_SRST;
+  reg                 clockArea_secondary_nIEN;
+  reg                 clockArea_secondary_BSY;
+  reg                 clockArea_secondary_DRDY;
+  reg                 clockArea_secondary_DF;
+  reg                 clockArea_secondary_DRQ;
+  reg                 clockArea_secondary_ERR;
+  reg        [7:0]    clockArea_secondary_COMMAND;
+  reg                 clockArea_secondary_COMMAND_PEND;
+  reg        [7:0]    clockArea_secondary_LBALow;
+  wire                when_IDEDeviceRegs_l59_1;
+  reg        [7:0]    clockArea_secondary_LBALowPrev;
+  reg        [7:0]    clockArea_secondary_LBAMid;
+  wire                when_IDEDeviceRegs_l61_1;
+  reg        [7:0]    clockArea_secondary_LBAMidPrev;
+  reg        [7:0]    clockArea_secondary_LBAHigh;
+  wire                when_IDEDeviceRegs_l63_1;
+  reg        [7:0]    clockArea_secondary_LBAHighPrev;
+  reg                 clockArea_secondary_ABRT;
+  reg        [7:0]    clockArea_secondary_Features;
+  reg        [15:0]   clockArea_secondary_SectorCount;
+  reg        [15:0]   clockArea_secondary_testReg;
+  wire                when_IDEDeviceRegs_l106_1;
+  reg                 clockArea_secondary_SRST_regNext;
+  wire                when_IDEDeviceRegs_l123_1;
+  wire                when_IDEDeviceRegs_l129_1;
+  wire                clockArea_secondary_dmaTransfer;
+  wire                clockArea_secondary_deviceSelected;
+  wire                when_IDEDeviceRegs_l151_1;
+  wire                when_IDEDeviceRegs_l159_1;
+  wire                when_IDEDeviceRegs_l170_1;
+  reg                 clockArea_secondary_RD_regNext;
+  wire                when_IDEDeviceRegs_l177_1;
+  wire                when_IDEDeviceRegs_l185_1;
+  wire                when_IDEDeviceRegs_l193_1;
+  wire                when_IDEDeviceRegs_l200_1;
+  wire                when_IDEDeviceRegs_l219_1;
+  wire                when_IDEDeviceRegs_l237_1;
+  wire                when_IDEDeviceRegs_l253_1;
+  wire                when_IDEDeviceRegs_l269_1;
+  wire                when_IDEDeviceRegs_l284_1;
+  wire                when_IDEDeviceRegs_l296_1;
+  reg                 clockArea_secondary_WR_regNext_1;
+  wire                when_IDEDeviceRegs_l320_1;
+  wire                when_IDEDeviceRegs_l331_1;
+  wire                when_IDEDeviceRegs_l340_1;
+  wire                clockArea_secondary_irqDelay_0;
+  reg                 clockArea_secondary_irqDelay_1;
+  reg                 clockArea_secondary_irqDelay_2;
+  reg                 clockArea_secondary_irqDelay_3;
+  wire                when_IDEDeviceRegs_l362_1;
+  wire                when_IDEDeviceRegs_l371_1;
+  wire                when_IDEDeviceRegs_l389_1;
+  wire                when_IDEDeviceRegs_l396_1;
+  wire                when_IDEDeviceRegs_l405_1;
+  wire                when_IDEDeviceRegs_l407_1;
+  wire                when_IDEDeviceRegs_l412_1;
+  wire                when_IDEDeviceRegs_l414_1;
+  wire                when_IDEDeviceRegs_l419_1;
+  wire                when_IDEDeviceRegs_l422_1;
+  wire                when_IDEDeviceRegs_l425_1;
+  wire                when_IDEDeviceRegs_l430_1;
+  wire                when_IDEDeviceRegs_l433_1;
+  wire                when_IDEDeviceRegs_l436_1;
+  wire                when_IDEDeviceRegs_l441_1;
+  wire                when_IDEDeviceRegs_l444_1;
+  wire                when_IDEDeviceRegs_l447_1;
+  wire                when_IDEDeviceRegs_l452_1;
+  wire                when_IDEDeviceRegs_l456_1;
+  wire                when_IDEDeviceRegs_l459_1;
+  wire                when_IDEDeviceRegs_l464_1;
+  wire                when_IDEDeviceRegs_l468_1;
+  wire                when_IDEDeviceRegs_l471_1;
+  wire                when_IDEDeviceRegs_l476_1;
+  wire                when_IDEDeviceRegs_l480_1;
+  wire                when_IDEDeviceRegs_l485_1;
+  wire                when_IDEDeviceRegs_l489_1;
+  wire                when_IDEDeviceRegs_l493_1;
+  wire       [63:0]   _zz_io_MCU_DATA_OUT;
+  reg        [15:0]   _zz_io_MCU_DATA_OUT_1;
   wire                when_OpenGDEMU_l71;
-  wire                when_OpenGDEMU_l73;
-  wire                when_OpenGDEMU_l74;
-  wire                clockArea_WR_SYNC;
-  wire                clockArea_RD_SYNC;
-  reg        [15:0]   clockArea_DC_DATA_IN_SYNC;
-  reg        [2:0]    clockArea_DC_ADDR_SYNC;
-  reg        [1:0]    clockArea_DC_CS_SYNC;
+  wire                when_OpenGDEMU_l72;
 
-  BufferCC io_DC_WR_buffercc (
-    .io_dataIn     (io_DC_WR                      ), //i
-    .io_dataOut    (io_DC_WR_buffercc_io_dataOut  ), //o
-    .io_MCU_CLK    (io_MCU_CLK                    ), //i
-    .io_MCU_RST    (io_MCU_RST                    )  //i
+  assign _zz_io_MCU_DATA_OUT_3 = io_MCU_ADDR[1 : 0];
+  StreamFifo clockArea_primary_readFIFOStream (
+    .io_push_valid   (clockArea_primary_readFIFOStream_io_push_valid        ), //i
+    .io_push_ready   (clockArea_primary_readFIFOStream_io_push_ready        ), //o
+    .io_push_payload (io_MCU_DATA_IN[15:0]                                  ), //i
+    .io_pop_valid    (clockArea_primary_readFIFOStream_io_pop_valid         ), //o
+    .io_pop_ready    (clockArea_primary_readFIFOStream_io_pop_ready         ), //i
+    .io_pop_payload  (clockArea_primary_readFIFOStream_io_pop_payload[15:0] ), //o
+    .io_flush        (clockArea_primary_readFIFOStream_io_flush             ), //i
+    .io_occupancy    (clockArea_primary_readFIFOStream_io_occupancy[10:0]   ), //o
+    .io_availability (clockArea_primary_readFIFOStream_io_availability[10:0]), //o
+    .io_MCU_CLK      (io_MCU_CLK                                            ), //i
+    .io_MCU_RST      (io_MCU_RST                                            )  //i
   );
-  BufferCC io_DC_RD_buffercc (
-    .io_dataIn     (io_DC_RD                      ), //i
-    .io_dataOut    (io_DC_RD_buffercc_io_dataOut  ), //o
-    .io_MCU_CLK    (io_MCU_CLK                    ), //i
-    .io_MCU_RST    (io_MCU_RST                    )  //i
+  StreamFifo clockArea_primary_writeFIFOStream (
+    .io_push_valid   (clockArea_primary_writeFIFOStream_io_push_valid        ), //i
+    .io_push_ready   (clockArea_primary_writeFIFOStream_io_push_ready        ), //o
+    .io_push_payload (io_IDE_DATA_IN[15:0]                                   ), //i
+    .io_pop_valid    (clockArea_primary_writeFIFOStream_io_pop_valid         ), //o
+    .io_pop_ready    (clockArea_primary_writeFIFOStream_io_pop_ready         ), //i
+    .io_pop_payload  (clockArea_primary_writeFIFOStream_io_pop_payload[15:0] ), //o
+    .io_flush        (clockArea_primary_writeFIFOStream_io_flush             ), //i
+    .io_occupancy    (clockArea_primary_writeFIFOStream_io_occupancy[10:0]   ), //o
+    .io_availability (clockArea_primary_writeFIFOStream_io_availability[10:0]), //o
+    .io_MCU_CLK      (io_MCU_CLK                                             ), //i
+    .io_MCU_RST      (io_MCU_RST                                             )  //i
   );
-  PATA_HDD clockArea_slaveDevice (
-    .io_pataBus_RST            (io_DC_RST                                        ), //i
-    .io_pataBus_CS             (clockArea_DC_CS_SYNC[1:0]                        ), //i
-    .io_pataBus_WR             (clockArea_WR_SYNC                                ), //i
-    .io_pataBus_RD             (clockArea_RD_SYNC                                ), //i
-    .io_pataBus_ADDR           (clockArea_DC_ADDR_SYNC[2:0]                      ), //i
-    .io_pataBus_DATA_IN        (clockArea_DC_DATA_IN_SYNC[15:0]                  ), //i
-    .io_pataBus_DATA_OUT       (clockArea_slaveDevice_io_pataBus_DATA_OUT[15:0]  ), //o
-    .io_pataBus_DATA_OUT_EN    (clockArea_slaveDevice_io_pataBus_DATA_OUT_EN     ), //o
-    .io_pataBus_DMARQ          (clockArea_slaveDevice_io_pataBus_DMARQ           ), //o
-    .io_pataBus_DMACK          (io_DC_DMACK                                      ), //i
-    .io_pataBus_IORDY          (clockArea_slaveDevice_io_pataBus_IORDY           ), //o
-    .io_pataBus_INTRQ          (clockArea_slaveDevice_io_pataBus_INTRQ           ), //o
-    .io_mcuBus_RD              (clockArea_slaveDevice_io_mcuBus_RD               ), //i
-    .io_mcuBus_WR              (clockArea_slaveDevice_io_mcuBus_WR[1:0]          ), //i
-    .io_mcuBus_ADDR            (clockArea_slaveDevice_io_mcuBus_ADDR[5:0]        ), //i
-    .io_mcuBus_DATA_IN         (io_MCU_DATA_IN[15:0]                             ), //i
-    .io_mcuBus_DATA_OUT        (clockArea_slaveDevice_io_mcuBus_DATA_OUT[15:0]   ), //o
-    .io_mcuBus_IRQ             (clockArea_slaveDevice_io_mcuBus_IRQ              ), //o
-    .io_MCU_CLK                (io_MCU_CLK                                       ), //i
-    .io_MCU_RST                (io_MCU_RST                                       )  //i
+  IDEAddressDecode clockArea_primary_ideDecode (
+    .io_CSn                     (io_IDE_CSn[1:0]                                       ), //i
+    .io_ADDR                    (io_IDE_ADDR[2:0]                                      ), //i
+    .io_DataRegister            (clockArea_primary_ideDecode_io_DataRegister           ), //o
+    .io_ErrorRegister           (clockArea_primary_ideDecode_io_ErrorRegister          ), //o
+    .io_FeaturesRegister        (clockArea_primary_ideDecode_io_FeaturesRegister       ), //o
+    .io_SectorCountRegister     (clockArea_primary_ideDecode_io_SectorCountRegister    ), //o
+    .io_LBALowRegister          (clockArea_primary_ideDecode_io_LBALowRegister         ), //o
+    .io_LBAMidRegister          (clockArea_primary_ideDecode_io_LBAMidRegister         ), //o
+    .io_LBAHighRegister         (clockArea_primary_ideDecode_io_LBAHighRegister        ), //o
+    .io_DeviceRegister          (clockArea_primary_ideDecode_io_DeviceRegister         ), //o
+    .io_CommandRegister         (clockArea_primary_ideDecode_io_CommandRegister        ), //o
+    .io_StatusRegister          (clockArea_primary_ideDecode_io_StatusRegister         ), //o
+    .io_DeviceControlRegister   (clockArea_primary_ideDecode_io_DeviceControlRegister  ), //o
+    .io_AlternateStatusRegister (clockArea_primary_ideDecode_io_AlternateStatusRegister), //o
+    .io_DebugTestpad            (clockArea_primary_ideDecode_io_DebugTestpad           )  //o
   );
-  assign clockArea_globalRegsCS = (io_MCU_ADDR[7 : 6] == 2'b00);
-  assign clockArea_masterRegsCS = ((io_MCU_ADDR[7] == 1'b1) && (io_MCU_ADDR[6] == 1'b0));
-  assign clockArea_slaveRegsCS = ((io_MCU_ADDR[7] == 1'b1) && (io_MCU_ADDR[6] == 1'b1));
+  MCURegisterManagerGenerator clockArea_primary_mcuRegGen (
+  );
+  StreamFifo clockArea_secondary_readFIFOStream (
+    .io_push_valid   (clockArea_secondary_readFIFOStream_io_push_valid        ), //i
+    .io_push_ready   (clockArea_secondary_readFIFOStream_io_push_ready        ), //o
+    .io_push_payload (io_MCU_DATA_IN[15:0]                                    ), //i
+    .io_pop_valid    (clockArea_secondary_readFIFOStream_io_pop_valid         ), //o
+    .io_pop_ready    (clockArea_secondary_readFIFOStream_io_pop_ready         ), //i
+    .io_pop_payload  (clockArea_secondary_readFIFOStream_io_pop_payload[15:0] ), //o
+    .io_flush        (clockArea_secondary_readFIFOStream_io_flush             ), //i
+    .io_occupancy    (clockArea_secondary_readFIFOStream_io_occupancy[10:0]   ), //o
+    .io_availability (clockArea_secondary_readFIFOStream_io_availability[10:0]), //o
+    .io_MCU_CLK      (io_MCU_CLK                                              ), //i
+    .io_MCU_RST      (io_MCU_RST                                              )  //i
+  );
+  StreamFifo clockArea_secondary_writeFIFOStream (
+    .io_push_valid   (clockArea_secondary_writeFIFOStream_io_push_valid        ), //i
+    .io_push_ready   (clockArea_secondary_writeFIFOStream_io_push_ready        ), //o
+    .io_push_payload (io_IDE_DATA_IN[15:0]                                     ), //i
+    .io_pop_valid    (clockArea_secondary_writeFIFOStream_io_pop_valid         ), //o
+    .io_pop_ready    (clockArea_secondary_writeFIFOStream_io_pop_ready         ), //i
+    .io_pop_payload  (clockArea_secondary_writeFIFOStream_io_pop_payload[15:0] ), //o
+    .io_flush        (clockArea_secondary_writeFIFOStream_io_flush             ), //i
+    .io_occupancy    (clockArea_secondary_writeFIFOStream_io_occupancy[10:0]   ), //o
+    .io_availability (clockArea_secondary_writeFIFOStream_io_availability[10:0]), //o
+    .io_MCU_CLK      (io_MCU_CLK                                               ), //i
+    .io_MCU_RST      (io_MCU_RST                                               )  //i
+  );
+  IDEAddressDecode clockArea_secondary_ideDecode (
+    .io_CSn                     (io_IDE_CSn[1:0]                                         ), //i
+    .io_ADDR                    (io_IDE_ADDR[2:0]                                        ), //i
+    .io_DataRegister            (clockArea_secondary_ideDecode_io_DataRegister           ), //o
+    .io_ErrorRegister           (clockArea_secondary_ideDecode_io_ErrorRegister          ), //o
+    .io_FeaturesRegister        (clockArea_secondary_ideDecode_io_FeaturesRegister       ), //o
+    .io_SectorCountRegister     (clockArea_secondary_ideDecode_io_SectorCountRegister    ), //o
+    .io_LBALowRegister          (clockArea_secondary_ideDecode_io_LBALowRegister         ), //o
+    .io_LBAMidRegister          (clockArea_secondary_ideDecode_io_LBAMidRegister         ), //o
+    .io_LBAHighRegister         (clockArea_secondary_ideDecode_io_LBAHighRegister        ), //o
+    .io_DeviceRegister          (clockArea_secondary_ideDecode_io_DeviceRegister         ), //o
+    .io_CommandRegister         (clockArea_secondary_ideDecode_io_CommandRegister        ), //o
+    .io_StatusRegister          (clockArea_secondary_ideDecode_io_StatusRegister         ), //o
+    .io_DeviceControlRegister   (clockArea_secondary_ideDecode_io_DeviceControlRegister  ), //o
+    .io_AlternateStatusRegister (clockArea_secondary_ideDecode_io_AlternateStatusRegister), //o
+    .io_DebugTestpad            (clockArea_secondary_ideDecode_io_DebugTestpad           )  //o
+  );
+  MCURegisterManagerGenerator clockArea_secondary_mcuRegGen (
+  );
   always @(*) begin
-    io_MCU_DATA_OUT = 16'h0;
+    case(_zz_io_MCU_DATA_OUT_3)
+      2'b00 : _zz_io_MCU_DATA_OUT_2 = _zz_io_MCU_DATA_OUT[15 : 0];
+      2'b01 : _zz_io_MCU_DATA_OUT_2 = _zz_io_MCU_DATA_OUT[31 : 16];
+      2'b10 : _zz_io_MCU_DATA_OUT_2 = _zz_io_MCU_DATA_OUT[47 : 32];
+      default : _zz_io_MCU_DATA_OUT_2 = _zz_io_MCU_DATA_OUT[63 : 48];
+    endcase
+  end
+
+  assign clockArea_globalRegsCS = (! io_MCU_ADDR[7]);
+  assign clockArea_ideRegsCS = io_MCU_ADDR[7];
+  assign clockArea_idePrimaryRegsCS = (! io_MCU_ADDR[6]);
+  assign clockArea_ideSecondaryRegsCS = io_MCU_ADDR[6];
+  assign clockArea_primary_mcuDataOutputEn = 2'b00;
+  assign clockArea_primary_RD = (! io_IDE_RDn);
+  assign clockArea_primary_WR = (! io_IDE_WRn);
+  assign clockArea_primary_WR_STROBE = ((! clockArea_primary_WR) && clockArea_primary_WR_regNext);
+  assign clockArea_primary_DEV = clockArea_primary_DEVICE[4];
+  assign when_IDEDeviceRegs_l59 = 1'b0;
+  assign when_IDEDeviceRegs_l61 = 1'b0;
+  assign when_IDEDeviceRegs_l63 = 1'b0;
+  always @(*) begin
+    clockArea_primary_readFIFOStream_io_flush = 1'b0;
+    if(when_IDEDeviceRegs_l106) begin
+      clockArea_primary_readFIFOStream_io_flush = 1'b1;
+    end
+    if(when_IDEDeviceRegs_l362) begin
+      if(when_IDEDeviceRegs_l371) begin
+        clockArea_primary_readFIFOStream_io_flush = 1'b1;
+      end
+    end
+  end
+
+  always @(*) begin
+    clockArea_primary_writeFIFOStream_io_flush = 1'b0;
+    if(when_IDEDeviceRegs_l106) begin
+      clockArea_primary_writeFIFOStream_io_flush = 1'b1;
+    end
+  end
+
+  always @(*) begin
+    clockArea_primary_readFIFOStream_io_pop_ready = 1'b0;
+    if(when_IDEDeviceRegs_l170) begin
+      if(when_IDEDeviceRegs_l177) begin
+        clockArea_primary_readFIFOStream_io_pop_ready = 1'b1;
+      end
+    end
+  end
+
+  always @(*) begin
+    clockArea_primary_writeFIFOStream_io_push_valid = 1'b0;
+    if(when_IDEDeviceRegs_l170) begin
+      if(clockArea_primary_WR) begin
+        clockArea_primary_writeFIFOStream_io_push_valid = 1'b1;
+      end
+    end
+  end
+
+  assign when_IDEDeviceRegs_l106 = (clockArea_primary_SRST || (! io_IDE_RSTn));
+  assign when_IDEDeviceRegs_l123 = ((! clockArea_primary_SRST) && clockArea_primary_SRST_regNext);
+  assign when_IDEDeviceRegs_l129 = (clockArea_primary_dataOutputEn && io_IDE_RDn);
+  assign clockArea_primary_dmaTransfer = (((io_IDE_CSn == 2'b11) && io_IDE_DMARQ) && (! io_IDE_DMACKn));
+  assign clockArea_primary_deviceSelected = (clockArea_primary_DEV == 1'b0);
+  assign when_IDEDeviceRegs_l151 = (clockArea_primary_ideDecode_io_DeviceRegister && clockArea_primary_WR);
+  assign when_IDEDeviceRegs_l159 = (clockArea_primary_deviceSelected && clockArea_primary_dmaTransfer);
+  assign when_IDEDeviceRegs_l170 = (clockArea_primary_deviceSelected && clockArea_primary_ideDecode_io_DataRegister);
+  assign when_IDEDeviceRegs_l177 = ((! clockArea_primary_RD) && clockArea_primary_RD_regNext);
+  assign when_IDEDeviceRegs_l185 = (clockArea_primary_deviceSelected && clockArea_primary_ideDecode_io_ErrorRegister);
+  assign when_IDEDeviceRegs_l193 = (clockArea_primary_deviceSelected && clockArea_primary_ideDecode_io_FeaturesRegister);
+  assign when_IDEDeviceRegs_l200 = (clockArea_primary_deviceSelected && clockArea_primary_ideDecode_io_SectorCountRegister);
+  assign when_IDEDeviceRegs_l219 = (clockArea_primary_deviceSelected && clockArea_primary_ideDecode_io_LBALowRegister);
+  assign when_IDEDeviceRegs_l237 = (clockArea_primary_deviceSelected && clockArea_primary_ideDecode_io_LBAMidRegister);
+  assign when_IDEDeviceRegs_l253 = (clockArea_primary_deviceSelected && clockArea_primary_ideDecode_io_LBAHighRegister);
+  assign when_IDEDeviceRegs_l269 = (clockArea_primary_deviceSelected && clockArea_primary_ideDecode_io_DeviceRegister);
+  assign when_IDEDeviceRegs_l284 = (clockArea_primary_deviceSelected && clockArea_primary_ideDecode_io_StatusRegister);
+  assign when_IDEDeviceRegs_l296 = (clockArea_primary_deviceSelected && clockArea_primary_ideDecode_io_CommandRegister);
+  assign when_IDEDeviceRegs_l320 = (clockArea_primary_deviceSelected && clockArea_primary_ideDecode_io_AlternateStatusRegister);
+  assign when_IDEDeviceRegs_l331 = (clockArea_primary_deviceSelected && clockArea_primary_ideDecode_io_DeviceControlRegister);
+  assign when_IDEDeviceRegs_l340 = (clockArea_primary_deviceSelected && clockArea_primary_ideDecode_io_DebugTestpad);
+  assign clockArea_primary_irqDelay_0 = clockArea_primary_COMMAND_PEND;
+  always @(*) begin
+    clockArea_primary_readFIFOStream_io_push_valid = 1'b0;
+    if(when_IDEDeviceRegs_l476) begin
+      if(when_IDEDeviceRegs_l480) begin
+        clockArea_primary_readFIFOStream_io_push_valid = 1'b1;
+      end
+    end
+  end
+
+  always @(*) begin
+    clockArea_primary_writeFIFOStream_io_pop_ready = 1'b0;
+    if(when_IDEDeviceRegs_l476) begin
+      clockArea_primary_writeFIFOStream_io_pop_ready = 1'b1;
+    end
+  end
+
+  assign when_IDEDeviceRegs_l362 = (io_MCU_ADDR == 8'h0);
+  assign when_IDEDeviceRegs_l371 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l389 = (io_MCU_ADDR == 8'h01);
+  assign when_IDEDeviceRegs_l396 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l405 = (io_MCU_ADDR == 8'h02);
+  assign when_IDEDeviceRegs_l407 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l412 = (io_MCU_ADDR == 8'h03);
+  assign when_IDEDeviceRegs_l414 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l419 = (io_MCU_ADDR == 8'h04);
+  assign when_IDEDeviceRegs_l422 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l425 = io_MCU_WR[1];
+  assign when_IDEDeviceRegs_l430 = (io_MCU_ADDR == 8'h05);
+  assign when_IDEDeviceRegs_l433 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l436 = io_MCU_WR[1];
+  assign when_IDEDeviceRegs_l441 = (io_MCU_ADDR == 8'h06);
+  assign when_IDEDeviceRegs_l444 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l447 = io_MCU_WR[1];
+  assign when_IDEDeviceRegs_l452 = (io_MCU_ADDR == 8'h07);
+  assign when_IDEDeviceRegs_l456 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l459 = io_MCU_WR[1];
+  assign when_IDEDeviceRegs_l464 = (io_MCU_ADDR == 8'h08);
+  assign when_IDEDeviceRegs_l468 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l471 = io_MCU_WR[1];
+  assign when_IDEDeviceRegs_l476 = (io_MCU_ADDR == 8'h09);
+  assign when_IDEDeviceRegs_l480 = (io_MCU_WR[0] && io_MCU_WR[1]);
+  assign when_IDEDeviceRegs_l485 = (io_MCU_ADDR == 8'h0a);
+  assign when_IDEDeviceRegs_l489 = (io_MCU_ADDR == 8'h0b);
+  assign when_IDEDeviceRegs_l493 = (io_MCU_ADDR == 8'h0c);
+  assign clockArea_secondary_mcuDataOutputEn = 2'b00;
+  assign clockArea_secondary_RD = (! io_IDE_RDn);
+  assign clockArea_secondary_WR = (! io_IDE_WRn);
+  assign clockArea_secondary_WR_STROBE = ((! clockArea_secondary_WR) && clockArea_secondary_WR_regNext);
+  assign clockArea_secondary_DEV = clockArea_secondary_DEVICE[4];
+  assign when_IDEDeviceRegs_l59_1 = 1'b0;
+  assign when_IDEDeviceRegs_l61_1 = 1'b0;
+  assign when_IDEDeviceRegs_l63_1 = 1'b0;
+  always @(*) begin
+    clockArea_secondary_readFIFOStream_io_flush = 1'b0;
+    if(when_IDEDeviceRegs_l106_1) begin
+      clockArea_secondary_readFIFOStream_io_flush = 1'b1;
+    end
+    if(when_IDEDeviceRegs_l362_1) begin
+      if(when_IDEDeviceRegs_l371_1) begin
+        clockArea_secondary_readFIFOStream_io_flush = 1'b1;
+      end
+    end
+  end
+
+  always @(*) begin
+    clockArea_secondary_writeFIFOStream_io_flush = 1'b0;
+    if(when_IDEDeviceRegs_l106_1) begin
+      clockArea_secondary_writeFIFOStream_io_flush = 1'b1;
+    end
+  end
+
+  always @(*) begin
+    clockArea_secondary_readFIFOStream_io_pop_ready = 1'b0;
+    if(when_IDEDeviceRegs_l170_1) begin
+      if(when_IDEDeviceRegs_l177_1) begin
+        clockArea_secondary_readFIFOStream_io_pop_ready = 1'b1;
+      end
+    end
+  end
+
+  always @(*) begin
+    clockArea_secondary_writeFIFOStream_io_push_valid = 1'b0;
+    if(when_IDEDeviceRegs_l170_1) begin
+      if(clockArea_secondary_WR) begin
+        clockArea_secondary_writeFIFOStream_io_push_valid = 1'b1;
+      end
+    end
+  end
+
+  assign when_IDEDeviceRegs_l106_1 = (clockArea_secondary_SRST || (! io_IDE_RSTn));
+  assign when_IDEDeviceRegs_l123_1 = ((! clockArea_secondary_SRST) && clockArea_secondary_SRST_regNext);
+  assign when_IDEDeviceRegs_l129_1 = (clockArea_secondary_dataOutputEn && io_IDE_RDn);
+  assign clockArea_secondary_dmaTransfer = (((io_IDE_CSn == 2'b11) && io_IDE_DMARQ) && (! io_IDE_DMACKn));
+  assign clockArea_secondary_deviceSelected = (clockArea_secondary_DEV == 1'b1);
+  assign when_IDEDeviceRegs_l151_1 = (clockArea_secondary_ideDecode_io_DeviceRegister && clockArea_secondary_WR);
+  assign when_IDEDeviceRegs_l159_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_dmaTransfer);
+  assign when_IDEDeviceRegs_l170_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_ideDecode_io_DataRegister);
+  assign when_IDEDeviceRegs_l177_1 = ((! clockArea_secondary_RD) && clockArea_secondary_RD_regNext);
+  assign when_IDEDeviceRegs_l185_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_ideDecode_io_ErrorRegister);
+  assign when_IDEDeviceRegs_l193_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_ideDecode_io_FeaturesRegister);
+  assign when_IDEDeviceRegs_l200_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_ideDecode_io_SectorCountRegister);
+  assign when_IDEDeviceRegs_l219_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_ideDecode_io_LBALowRegister);
+  assign when_IDEDeviceRegs_l237_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_ideDecode_io_LBAMidRegister);
+  assign when_IDEDeviceRegs_l253_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_ideDecode_io_LBAHighRegister);
+  assign when_IDEDeviceRegs_l269_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_ideDecode_io_DeviceRegister);
+  assign when_IDEDeviceRegs_l284_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_ideDecode_io_StatusRegister);
+  assign when_IDEDeviceRegs_l296_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_ideDecode_io_CommandRegister);
+  assign when_IDEDeviceRegs_l320_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_ideDecode_io_AlternateStatusRegister);
+  assign when_IDEDeviceRegs_l331_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_ideDecode_io_DeviceControlRegister);
+  assign when_IDEDeviceRegs_l340_1 = (clockArea_secondary_deviceSelected && clockArea_secondary_ideDecode_io_DebugTestpad);
+  assign clockArea_secondary_irqDelay_0 = clockArea_secondary_COMMAND_PEND;
+  always @(*) begin
+    clockArea_secondary_readFIFOStream_io_push_valid = 1'b0;
+    if(when_IDEDeviceRegs_l476_1) begin
+      if(when_IDEDeviceRegs_l480_1) begin
+        clockArea_secondary_readFIFOStream_io_push_valid = 1'b1;
+      end
+    end
+  end
+
+  always @(*) begin
+    clockArea_secondary_writeFIFOStream_io_pop_ready = 1'b0;
+    if(when_IDEDeviceRegs_l476_1) begin
+      clockArea_secondary_writeFIFOStream_io_pop_ready = 1'b1;
+    end
+  end
+
+  assign when_IDEDeviceRegs_l362_1 = (io_MCU_ADDR == 8'h0);
+  assign when_IDEDeviceRegs_l371_1 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l389_1 = (io_MCU_ADDR == 8'h01);
+  assign when_IDEDeviceRegs_l396_1 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l405_1 = (io_MCU_ADDR == 8'h02);
+  assign when_IDEDeviceRegs_l407_1 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l412_1 = (io_MCU_ADDR == 8'h03);
+  assign when_IDEDeviceRegs_l414_1 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l419_1 = (io_MCU_ADDR == 8'h04);
+  assign when_IDEDeviceRegs_l422_1 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l425_1 = io_MCU_WR[1];
+  assign when_IDEDeviceRegs_l430_1 = (io_MCU_ADDR == 8'h05);
+  assign when_IDEDeviceRegs_l433_1 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l436_1 = io_MCU_WR[1];
+  assign when_IDEDeviceRegs_l441_1 = (io_MCU_ADDR == 8'h06);
+  assign when_IDEDeviceRegs_l444_1 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l447_1 = io_MCU_WR[1];
+  assign when_IDEDeviceRegs_l452_1 = (io_MCU_ADDR == 8'h07);
+  assign when_IDEDeviceRegs_l456_1 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l459_1 = io_MCU_WR[1];
+  assign when_IDEDeviceRegs_l464_1 = (io_MCU_ADDR == 8'h08);
+  assign when_IDEDeviceRegs_l468_1 = io_MCU_WR[0];
+  assign when_IDEDeviceRegs_l471_1 = io_MCU_WR[1];
+  assign when_IDEDeviceRegs_l476_1 = (io_MCU_ADDR == 8'h09);
+  assign when_IDEDeviceRegs_l480_1 = (io_MCU_WR[0] && io_MCU_WR[1]);
+  assign when_IDEDeviceRegs_l485_1 = (io_MCU_ADDR == 8'h0a);
+  assign when_IDEDeviceRegs_l489_1 = (io_MCU_ADDR == 8'h0b);
+  assign when_IDEDeviceRegs_l493_1 = (io_MCU_ADDR == 8'h0c);
+  assign io_IDE_DATA_OUT = (clockArea_primary_dataOutputEn ? clockArea_primary_dataOutput : clockArea_secondary_dataOutput);
+  assign io_IDE_DATA_OUT_EN = (clockArea_primary_dataOutputEn || clockArea_secondary_dataOutputEn);
+  assign io_IDE_DMARQ = 1'b0;
+  assign io_IDE_IORDY = 1'b0;
+  assign io_IDE_INTRQ = 1'b0;
+  assign io_MCU_IRQ = 1'b0;
+  always @(*) begin
+    io_MCU_DATA_OUT = 16'hc0de;
     if(clockArea_globalRegsCS) begin
-      if(when_OpenGDEMU_l67) begin
-        io_MCU_DATA_OUT = 16'h3cf8;
-      end
-      if(when_OpenGDEMU_l67_1) begin
-        io_MCU_DATA_OUT = 16'h62c2;
-      end
-      if(when_OpenGDEMU_l67_2) begin
-        io_MCU_DATA_OUT = 16'h0;
-      end
-      if(when_OpenGDEMU_l67_3) begin
-        io_MCU_DATA_OUT = 16'h0;
-      end
-      if(when_OpenGDEMU_l71) begin
-        io_MCU_DATA_OUT = _zz_io_MCU_DATA_OUT;
-      end
-    end
-    if(clockArea_masterRegsCS) begin
-      io_MCU_DATA_OUT = 16'hc0de;
-    end
-    if(clockArea_slaveRegsCS) begin
-      io_MCU_DATA_OUT = clockArea_slaveDevice_io_mcuBus_DATA_OUT;
-    end
-  end
-
-  assign when_OpenGDEMU_l67 = (io_MCU_ADDR == 8'h0);
-  assign when_OpenGDEMU_l67_1 = (io_MCU_ADDR == 8'h01);
-  assign when_OpenGDEMU_l67_2 = (io_MCU_ADDR == 8'h02);
-  assign when_OpenGDEMU_l67_3 = (io_MCU_ADDR == 8'h03);
-  assign when_OpenGDEMU_l71 = (io_MCU_ADDR == 8'h04);
-  assign when_OpenGDEMU_l73 = io_MCU_WR[0];
-  assign when_OpenGDEMU_l74 = io_MCU_WR[1];
-  assign clockArea_WR_SYNC = io_DC_WR_buffercc_io_dataOut;
-  assign clockArea_RD_SYNC = io_DC_RD_buffercc_io_dataOut;
-  assign io_DC_DATA_OUT = clockArea_slaveDevice_io_pataBus_DATA_OUT;
-  assign io_DC_DATA_OUT_EN = clockArea_slaveDevice_io_pataBus_DATA_OUT_EN;
-  assign io_DC_DMARQ = clockArea_slaveDevice_io_pataBus_DMARQ;
-  assign io_DC_INTRQ = clockArea_slaveDevice_io_pataBus_INTRQ;
-  assign io_DC_IORDY = clockArea_slaveDevice_io_pataBus_IORDY;
-  assign clockArea_slaveDevice_io_mcuBus_WR = (clockArea_slaveRegsCS ? io_MCU_WR : 2'b00);
-  assign clockArea_slaveDevice_io_mcuBus_RD = (clockArea_slaveRegsCS ? io_MCU_RD : 1'b0);
-  assign clockArea_slaveDevice_io_mcuBus_ADDR = io_MCU_ADDR[5 : 0];
-  assign io_MCU_IRQ = clockArea_slaveDevice_io_mcuBus_IRQ;
-  always @(posedge io_MCU_CLK or posedge io_MCU_RST) begin
-    if(io_MCU_RST) begin
-      _zz_io_MCU_DATA_OUT <= 16'h5aa5;
+      case(io_MCU_ADDR)
+        8'h0, 8'h01, 8'h02, 8'h03 : begin
+          io_MCU_DATA_OUT = _zz_io_MCU_DATA_OUT_2;
+        end
+        8'h04 : begin
+          io_MCU_DATA_OUT = _zz_io_MCU_DATA_OUT_1;
+        end
+        default : begin
+          io_MCU_DATA_OUT = 16'h0;
+        end
+      endcase
     end else begin
-      if(when_OpenGDEMU_l71) begin
-        if(when_OpenGDEMU_l73) begin
-          _zz_io_MCU_DATA_OUT[7 : 0] <= io_MCU_DATA_IN[7 : 0];
-        end
-        if(when_OpenGDEMU_l74) begin
-          _zz_io_MCU_DATA_OUT[15 : 8] <= io_MCU_DATA_IN[15 : 8];
-        end
-      end
-    end
-  end
-
-  always @(posedge io_MCU_CLK or posedge io_MCU_RST) begin
-    if(io_MCU_RST) begin
-      clockArea_DC_DATA_IN_SYNC <= 16'h0;
-      clockArea_DC_ADDR_SYNC <= 3'b000;
-      clockArea_DC_CS_SYNC <= 2'b00;
-    end else begin
-      clockArea_DC_DATA_IN_SYNC <= io_DC_DATA_IN;
-      clockArea_DC_ADDR_SYNC <= io_DC_ADDR;
-      clockArea_DC_CS_SYNC <= (~ io_DC_CSn);
-    end
-  end
-
-
-endmodule
-
-module PATA_HDD (
-  input               io_pataBus_RST,
-  input      [1:0]    io_pataBus_CS,
-  input               io_pataBus_WR,
-  input               io_pataBus_RD,
-  input      [2:0]    io_pataBus_ADDR,
-  input      [15:0]   io_pataBus_DATA_IN,
-  output reg [15:0]   io_pataBus_DATA_OUT,
-  output              io_pataBus_DATA_OUT_EN,
-  output              io_pataBus_DMARQ,
-  input               io_pataBus_DMACK,
-  output              io_pataBus_IORDY,
-  output              io_pataBus_INTRQ,
-  input               io_mcuBus_RD,
-  input      [1:0]    io_mcuBus_WR,
-  input      [5:0]    io_mcuBus_ADDR,
-  input      [15:0]   io_mcuBus_DATA_IN,
-  output reg [15:0]   io_mcuBus_DATA_OUT,
-  output              io_mcuBus_IRQ,
-  input               io_MCU_CLK,
-  input               io_MCU_RST
-);
-
-  reg                 ideRegs_readFIFOStream_io_push_valid;
-  reg                 ideRegs_readFIFOStream_io_pop_ready;
-  reg                 ideRegs_readFIFOStream_io_flush;
-  reg                 ideRegs_writeFIFOStream_io_push_valid;
-  reg                 ideRegs_writeFIFOStream_io_pop_ready;
-  reg                 ideRegs_writeFIFOStream_io_flush;
-  wire                ideRegs_readFIFOStream_io_push_ready;
-  wire                ideRegs_readFIFOStream_io_pop_valid;
-  wire       [15:0]   ideRegs_readFIFOStream_io_pop_payload;
-  wire       [10:0]   ideRegs_readFIFOStream_io_occupancy;
-  wire       [10:0]   ideRegs_readFIFOStream_io_availability;
-  wire                ideRegs_writeFIFOStream_io_push_ready;
-  wire                ideRegs_writeFIFOStream_io_pop_valid;
-  wire       [15:0]   ideRegs_writeFIFOStream_io_pop_payload;
-  wire       [10:0]   ideRegs_writeFIFOStream_io_occupancy;
-  wire       [10:0]   ideRegs_writeFIFOStream_io_availability;
-  wire                ideRegs_regBlock0;
-  wire                ideRegs_regBlock1;
-  wire                ideRegs_dmaTransfer;
-  reg                 io_pataBus_WR_regNext;
-  wire                ideRegs_WR_STROBE;
-  reg        [7:0]    ideRegs_DEVICE;
-  wire                ideRegs_DEV;
-  wire                ideRegs_deviceSelected;
-  reg                 ideRegs_HOB;
-  reg                 ideRegs_SRST;
-  reg                 ideRegs_nIEN;
-  reg                 ideRegs_BSY;
-  reg                 ideRegs_DRDY;
-  reg                 ideRegs_DF;
-  reg                 ideRegs_DRQ;
-  reg                 ideRegs_ERR;
-  reg        [7:0]    ideRegs_COMMAND;
-  reg                 ideRegs_COMMAND_PEND;
-  reg        [7:0]    ideRegs_LBALow;
-  reg        [7:0]    ideRegs_LBALowPrev;
-  reg        [7:0]    ideRegs_LBAMid;
-  reg        [7:0]    ideRegs_LBAMidPrev;
-  reg        [7:0]    ideRegs_LBAHigh;
-  reg        [7:0]    ideRegs_LBAHighPrev;
-  reg                 ideRegs_ABRT;
-  reg        [7:0]    ideRegs_Features;
-  reg        [15:0]   ideRegs_SectorCount;
-  wire                when_PATARegisters_l107;
-  reg                 ideRegs_SRST_regNext;
-  wire                when_PATARegisters_l124;
-  wire                when_PATARegisters_l129;
-  wire                when_PATARegisters_l141;
-  reg                 io_pataBus_RD_regNext;
-  wire                when_PATARegisters_l147;
-  wire                when_PATARegisters_l154;
-  wire                when_PATARegisters_l165;
-  wire                when_PATARegisters_l182;
-  wire                when_PATARegisters_l199;
-  wire                when_PATARegisters_l214;
-  wire                when_PATARegisters_l229;
-  wire                when_PATARegisters_l243;
-  reg                 io_pataBus_WR_regNext_1;
-  wire                when_PATARegisters_l270;
-  wire                when_PATARegisters_l276;
-  wire                mcuRegs_irqDelay_0;
-  reg                 mcuRegs_irqDelay_1;
-  reg                 mcuRegs_irqDelay_2;
-  reg                 mcuRegs_irqDelay_3;
-  wire                when_MCURegisters_l17;
-  wire                when_MCURegisters_l26;
-  wire                when_MCURegisters_l32;
-  wire                when_MCURegisters_l39;
-  wire                when_MCURegisters_l48;
-  wire                when_MCURegisters_l50;
-  wire                when_MCURegisters_l55;
-  wire                when_MCURegisters_l57;
-  wire                when_MCURegisters_l62;
-  wire                when_MCURegisters_l65;
-  wire                when_MCURegisters_l68;
-  wire                when_MCURegisters_l73;
-  wire                when_MCURegisters_l76;
-  wire                when_MCURegisters_l79;
-  wire                when_MCURegisters_l84;
-  wire                when_MCURegisters_l87;
-  wire                when_MCURegisters_l90;
-  wire                when_MCURegisters_l95;
-  wire                when_MCURegisters_l99;
-  wire                when_MCURegisters_l102;
-  wire                when_MCURegisters_l107;
-  wire                when_MCURegisters_l111;
-  wire                when_MCURegisters_l114;
-  wire                when_MCURegisters_l119;
-  wire                when_MCURegisters_l123;
-  wire                when_MCURegisters_l128;
-  wire                when_MCURegisters_l132;
-  wire                when_MCURegisters_l136;
-
-  StreamFifo ideRegs_readFIFOStream (
-    .io_push_valid      (ideRegs_readFIFOStream_io_push_valid          ), //i
-    .io_push_ready      (ideRegs_readFIFOStream_io_push_ready          ), //o
-    .io_push_payload    (io_mcuBus_DATA_IN[15:0]                       ), //i
-    .io_pop_valid       (ideRegs_readFIFOStream_io_pop_valid           ), //o
-    .io_pop_ready       (ideRegs_readFIFOStream_io_pop_ready           ), //i
-    .io_pop_payload     (ideRegs_readFIFOStream_io_pop_payload[15:0]   ), //o
-    .io_flush           (ideRegs_readFIFOStream_io_flush               ), //i
-    .io_occupancy       (ideRegs_readFIFOStream_io_occupancy[10:0]     ), //o
-    .io_availability    (ideRegs_readFIFOStream_io_availability[10:0]  ), //o
-    .io_MCU_CLK         (io_MCU_CLK                                    ), //i
-    .io_MCU_RST         (io_MCU_RST                                    )  //i
-  );
-  StreamFifo ideRegs_writeFIFOStream (
-    .io_push_valid      (ideRegs_writeFIFOStream_io_push_valid          ), //i
-    .io_push_ready      (ideRegs_writeFIFOStream_io_push_ready          ), //o
-    .io_push_payload    (io_pataBus_DATA_IN[15:0]                       ), //i
-    .io_pop_valid       (ideRegs_writeFIFOStream_io_pop_valid           ), //o
-    .io_pop_ready       (ideRegs_writeFIFOStream_io_pop_ready           ), //i
-    .io_pop_payload     (ideRegs_writeFIFOStream_io_pop_payload[15:0]   ), //o
-    .io_flush           (ideRegs_writeFIFOStream_io_flush               ), //i
-    .io_occupancy       (ideRegs_writeFIFOStream_io_occupancy[10:0]     ), //o
-    .io_availability    (ideRegs_writeFIFOStream_io_availability[10:0]  ), //o
-    .io_MCU_CLK         (io_MCU_CLK                                     ), //i
-    .io_MCU_RST         (io_MCU_RST                                     )  //i
-  );
-  assign ideRegs_regBlock0 = (io_pataBus_CS == 2'b01);
-  assign ideRegs_regBlock1 = (io_pataBus_CS == 2'b10);
-  assign ideRegs_dmaTransfer = (((io_pataBus_CS == 2'b00) && io_pataBus_DMARQ) && io_pataBus_DMACK);
-  assign io_pataBus_DMARQ = 1'b0;
-  assign io_pataBus_INTRQ = 1'b0;
-  assign io_pataBus_IORDY = 1'b1;
-  assign io_pataBus_DATA_OUT_EN = (io_pataBus_RD && ((ideRegs_regBlock0 || ideRegs_regBlock1) || ideRegs_dmaTransfer));
-  assign ideRegs_WR_STROBE = ((! io_pataBus_WR) && io_pataBus_WR_regNext);
-  assign ideRegs_DEV = ideRegs_DEVICE[4];
-  assign ideRegs_deviceSelected = (ideRegs_DEV == 1'b1);
-  always @(*) begin
-    ideRegs_readFIFOStream_io_pop_ready = 1'b0;
-    if(ideRegs_deviceSelected) begin
-      if(ideRegs_regBlock0) begin
-        if(when_PATARegisters_l141) begin
-          if(when_PATARegisters_l147) begin
-            ideRegs_readFIFOStream_io_pop_ready = 1'b1;
-          end
-        end
-      end
-    end
-  end
-
-  always @(*) begin
-    ideRegs_writeFIFOStream_io_push_valid = 1'b0;
-    if(ideRegs_deviceSelected) begin
-      if(ideRegs_regBlock0) begin
-        if(when_PATARegisters_l141) begin
-          if(io_pataBus_WR) begin
-            ideRegs_writeFIFOStream_io_push_valid = 1'b1;
-          end
-        end
-      end
-    end
-  end
-
-  always @(*) begin
-    io_pataBus_DATA_OUT = 16'h0;
-    if(ideRegs_deviceSelected) begin
-      if(ideRegs_dmaTransfer) begin
-        io_pataBus_DATA_OUT = 16'hdada;
-      end
-      if(ideRegs_regBlock0) begin
-        if(when_PATARegisters_l141) begin
-          if(io_pataBus_RD) begin
-            io_pataBus_DATA_OUT = ideRegs_readFIFOStream_io_pop_payload;
-          end
-        end
-        if(when_PATARegisters_l154) begin
-          if(io_pataBus_RD) begin
-            io_pataBus_DATA_OUT[2] = ideRegs_ABRT;
-          end
-        end
-        if(when_PATARegisters_l165) begin
-          if(io_pataBus_RD) begin
-            if(ideRegs_HOB) begin
-              io_pataBus_DATA_OUT[7 : 0] = ideRegs_SectorCount[15 : 8];
-            end else begin
-              io_pataBus_DATA_OUT[7 : 0] = ideRegs_SectorCount[7 : 0];
-            end
-          end
-        end
-        if(when_PATARegisters_l182) begin
-          if(io_pataBus_RD) begin
-            if(ideRegs_HOB) begin
-              io_pataBus_DATA_OUT[7 : 0] = ideRegs_LBALowPrev;
-            end else begin
-              io_pataBus_DATA_OUT[7 : 0] = ideRegs_LBALow;
-            end
-          end
-        end
-        if(when_PATARegisters_l199) begin
-          if(io_pataBus_RD) begin
-            if(ideRegs_HOB) begin
-              io_pataBus_DATA_OUT[7 : 0] = ideRegs_LBAMidPrev;
-            end else begin
-              io_pataBus_DATA_OUT[7 : 0] = ideRegs_LBAMid;
-            end
-          end
-        end
-        if(when_PATARegisters_l214) begin
-          if(io_pataBus_RD) begin
-            if(ideRegs_HOB) begin
-              io_pataBus_DATA_OUT[7 : 0] = ideRegs_LBAHighPrev;
-            end else begin
-              io_pataBus_DATA_OUT[7 : 0] = ideRegs_LBAHigh;
-            end
-          end
-        end
-        if(when_PATARegisters_l229) begin
-          if(io_pataBus_RD) begin
-            io_pataBus_DATA_OUT[7 : 0] = ideRegs_DEVICE;
-          end
-        end
-        if(when_PATARegisters_l243) begin
-          if(io_pataBus_RD) begin
-            io_pataBus_DATA_OUT[7] = ideRegs_BSY;
-            io_pataBus_DATA_OUT[6] = ideRegs_DRDY;
-            io_pataBus_DATA_OUT[5] = ideRegs_DF;
-            io_pataBus_DATA_OUT[3] = ideRegs_DRQ;
-            io_pataBus_DATA_OUT[0] = ideRegs_ERR;
-          end
-        end
-      end
-      if(ideRegs_regBlock1) begin
-        if(when_PATARegisters_l270) begin
-          if(io_pataBus_RD) begin
-            io_pataBus_DATA_OUT[7 : 0] = ideRegs_COMMAND;
-            io_pataBus_DATA_OUT[15 : 8] = 8'h5a;
-          end
-        end
-        if(when_PATARegisters_l276) begin
-          if(io_pataBus_RD) begin
-            io_pataBus_DATA_OUT[7] = ideRegs_BSY;
-            io_pataBus_DATA_OUT[6] = ideRegs_DRDY;
-            io_pataBus_DATA_OUT[5] = ideRegs_DF;
-            io_pataBus_DATA_OUT[3] = ideRegs_DRQ;
-            io_pataBus_DATA_OUT[0] = ideRegs_ERR;
-          end
-        end
-      end
-    end
-  end
-
-  always @(*) begin
-    ideRegs_readFIFOStream_io_flush = 1'b0;
-    if(when_PATARegisters_l107) begin
-      ideRegs_readFIFOStream_io_flush = 1'b1;
-    end
-    if(when_MCURegisters_l17) begin
-      if(when_MCURegisters_l26) begin
-        ideRegs_readFIFOStream_io_flush = 1'b1;
-      end
-    end
-  end
-
-  always @(*) begin
-    ideRegs_writeFIFOStream_io_flush = 1'b0;
-    if(when_PATARegisters_l107) begin
-      ideRegs_writeFIFOStream_io_flush = 1'b1;
-    end
-  end
-
-  assign when_PATARegisters_l107 = (ideRegs_SRST || io_pataBus_RST);
-  assign when_PATARegisters_l124 = ((! ideRegs_SRST) && ideRegs_SRST_regNext);
-  assign when_PATARegisters_l129 = ((ideRegs_regBlock0 && (io_pataBus_ADDR == 3'b110)) && io_pataBus_WR);
-  assign when_PATARegisters_l141 = (io_pataBus_ADDR == 3'b000);
-  assign when_PATARegisters_l147 = ((! io_pataBus_RD) && io_pataBus_RD_regNext);
-  assign when_PATARegisters_l154 = (io_pataBus_ADDR == 3'b001);
-  assign when_PATARegisters_l165 = (io_pataBus_ADDR == 3'b010);
-  assign when_PATARegisters_l182 = (io_pataBus_ADDR == 3'b011);
-  assign when_PATARegisters_l199 = (io_pataBus_ADDR == 3'b100);
-  assign when_PATARegisters_l214 = (io_pataBus_ADDR == 3'b101);
-  assign when_PATARegisters_l229 = (io_pataBus_ADDR == 3'b110);
-  assign when_PATARegisters_l243 = (io_pataBus_ADDR == 3'b111);
-  assign when_PATARegisters_l270 = (io_pataBus_ADDR == 3'b000);
-  assign when_PATARegisters_l276 = (io_pataBus_ADDR == 3'b110);
-  always @(*) begin
-    io_mcuBus_DATA_OUT = 16'h0;
-    if(when_MCURegisters_l17) begin
-      io_mcuBus_DATA_OUT[0] = 1'b1;
-      io_mcuBus_DATA_OUT[1] = ideRegs_COMMAND_PEND;
-    end
-    if(when_MCURegisters_l32) begin
-      io_mcuBus_DATA_OUT[0] = ideRegs_ERR;
-      io_mcuBus_DATA_OUT[3] = ideRegs_DRQ;
-      io_mcuBus_DATA_OUT[5] = ideRegs_DF;
-      io_mcuBus_DATA_OUT[6] = ideRegs_DRDY;
-      io_mcuBus_DATA_OUT[7] = ideRegs_BSY;
-    end
-    if(when_MCURegisters_l48) begin
-      io_mcuBus_DATA_OUT[7 : 0] = ideRegs_DEVICE;
-    end
-    if(when_MCURegisters_l55) begin
-      io_mcuBus_DATA_OUT[3] = ideRegs_ABRT;
-    end
-    if(when_MCURegisters_l62) begin
-      io_mcuBus_DATA_OUT[7 : 0] = ideRegs_COMMAND;
-      io_mcuBus_DATA_OUT[15 : 8] = ideRegs_Features;
-    end
-    if(when_MCURegisters_l73) begin
-      io_mcuBus_DATA_OUT = ideRegs_SectorCount;
-    end
-    if(when_MCURegisters_l84) begin
-      io_mcuBus_DATA_OUT[7 : 0] = ideRegs_LBALow;
-      io_mcuBus_DATA_OUT[15 : 8] = ideRegs_LBAMid;
-    end
-    if(when_MCURegisters_l95) begin
-      io_mcuBus_DATA_OUT[7 : 0] = ideRegs_LBAHigh;
-      io_mcuBus_DATA_OUT[15 : 8] = ideRegs_LBALowPrev;
-    end
-    if(when_MCURegisters_l107) begin
-      io_mcuBus_DATA_OUT[7 : 0] = ideRegs_LBAMidPrev;
-      io_mcuBus_DATA_OUT[15 : 8] = ideRegs_LBAHighPrev;
-    end
-    if(when_MCURegisters_l119) begin
-      io_mcuBus_DATA_OUT = ideRegs_writeFIFOStream_io_pop_payload;
-    end
-    if(when_MCURegisters_l128) begin
-      io_mcuBus_DATA_OUT[10 : 0] = ideRegs_readFIFOStream_io_occupancy;
-    end
-    if(when_MCURegisters_l132) begin
-      io_mcuBus_DATA_OUT[10 : 0] = ideRegs_writeFIFOStream_io_occupancy;
-    end
-    if(when_MCURegisters_l136) begin
-      io_mcuBus_DATA_OUT = 16'hcafe;
-    end
-  end
-
-  assign mcuRegs_irqDelay_0 = ideRegs_COMMAND_PEND;
-  assign io_mcuBus_IRQ = mcuRegs_irqDelay_3;
-  always @(*) begin
-    ideRegs_readFIFOStream_io_push_valid = 1'b0;
-    if(when_MCURegisters_l119) begin
-      if(when_MCURegisters_l123) begin
-        ideRegs_readFIFOStream_io_push_valid = 1'b1;
-      end
-    end
-  end
-
-  always @(*) begin
-    ideRegs_writeFIFOStream_io_pop_ready = 1'b0;
-    if(when_MCURegisters_l119) begin
-      ideRegs_writeFIFOStream_io_pop_ready = 1'b1;
-    end
-  end
-
-  assign when_MCURegisters_l17 = (io_mcuBus_ADDR == 6'h0);
-  assign when_MCURegisters_l26 = io_mcuBus_WR[0];
-  assign when_MCURegisters_l32 = (io_mcuBus_ADDR == 6'h01);
-  assign when_MCURegisters_l39 = io_mcuBus_WR[0];
-  assign when_MCURegisters_l48 = (io_mcuBus_ADDR == 6'h02);
-  assign when_MCURegisters_l50 = io_mcuBus_WR[0];
-  assign when_MCURegisters_l55 = (io_mcuBus_ADDR == 6'h03);
-  assign when_MCURegisters_l57 = io_mcuBus_WR[0];
-  assign when_MCURegisters_l62 = (io_mcuBus_ADDR == 6'h04);
-  assign when_MCURegisters_l65 = io_mcuBus_WR[0];
-  assign when_MCURegisters_l68 = io_mcuBus_WR[1];
-  assign when_MCURegisters_l73 = (io_mcuBus_ADDR == 6'h05);
-  assign when_MCURegisters_l76 = io_mcuBus_WR[0];
-  assign when_MCURegisters_l79 = io_mcuBus_WR[1];
-  assign when_MCURegisters_l84 = (io_mcuBus_ADDR == 6'h06);
-  assign when_MCURegisters_l87 = io_mcuBus_WR[0];
-  assign when_MCURegisters_l90 = io_mcuBus_WR[1];
-  assign when_MCURegisters_l95 = (io_mcuBus_ADDR == 6'h07);
-  assign when_MCURegisters_l99 = io_mcuBus_WR[0];
-  assign when_MCURegisters_l102 = io_mcuBus_WR[1];
-  assign when_MCURegisters_l107 = (io_mcuBus_ADDR == 6'h08);
-  assign when_MCURegisters_l111 = io_mcuBus_WR[0];
-  assign when_MCURegisters_l114 = io_mcuBus_WR[1];
-  assign when_MCURegisters_l119 = (io_mcuBus_ADDR == 6'h09);
-  assign when_MCURegisters_l123 = (io_mcuBus_WR[0] && io_mcuBus_WR[1]);
-  assign when_MCURegisters_l128 = (io_mcuBus_ADDR == 6'h0a);
-  assign when_MCURegisters_l132 = (io_mcuBus_ADDR == 6'h0b);
-  assign when_MCURegisters_l136 = (io_mcuBus_ADDR == 6'h0c);
-  always @(posedge io_MCU_CLK) begin
-    io_pataBus_WR_regNext <= io_pataBus_WR;
-    ideRegs_SRST_regNext <= ideRegs_SRST;
-    mcuRegs_irqDelay_1 <= mcuRegs_irqDelay_0;
-    mcuRegs_irqDelay_2 <= mcuRegs_irqDelay_1;
-    mcuRegs_irqDelay_3 <= mcuRegs_irqDelay_2;
-  end
-
-  always @(posedge io_MCU_CLK or posedge io_MCU_RST) begin
-    if(io_MCU_RST) begin
-      ideRegs_DEVICE <= 8'h0;
-      ideRegs_HOB <= 1'b0;
-      ideRegs_SRST <= 1'b0;
-      ideRegs_nIEN <= 1'b0;
-      ideRegs_BSY <= 1'b1;
-      ideRegs_DRDY <= 1'b0;
-      ideRegs_DF <= 1'b0;
-      ideRegs_DRQ <= 1'b0;
-      ideRegs_ERR <= 1'b0;
-      ideRegs_COMMAND <= 8'h0;
-      ideRegs_COMMAND_PEND <= 1'b0;
-      ideRegs_LBALow <= 8'h0;
-      ideRegs_LBALowPrev <= 8'h0;
-      ideRegs_LBAMid <= 8'h0;
-      ideRegs_LBAMidPrev <= 8'h0;
-      ideRegs_LBAHigh <= 8'h0;
-      ideRegs_LBAHighPrev <= 8'h0;
-      ideRegs_ABRT <= 1'b0;
-      ideRegs_Features <= 8'h0;
-      ideRegs_SectorCount <= 16'h0;
-    end else begin
-      if(when_PATARegisters_l107) begin
-        ideRegs_BSY <= 1'b1;
-        ideRegs_DRDY <= 1'b0;
-        ideRegs_DRQ <= 1'b0;
-        ideRegs_COMMAND <= 8'h0;
-        ideRegs_LBALow <= 8'h0;
-        ideRegs_LBALowPrev <= 8'h0;
-        ideRegs_LBAMid <= 8'h0;
-        ideRegs_LBAMidPrev <= 8'h0;
-        ideRegs_LBAHigh <= 8'h0;
-        ideRegs_LBAHighPrev <= 8'h0;
-        ideRegs_COMMAND_PEND <= 1'b0;
+      if(clockArea_idePrimaryRegsCS) begin
+        io_MCU_DATA_OUT = clockArea_primary_mcuDataOutput;
       end else begin
-        if(when_PATARegisters_l124) begin
-          ideRegs_BSY <= 1'b0;
-          ideRegs_DRDY <= 1'b1;
+        io_MCU_DATA_OUT = clockArea_secondary_mcuDataOutput;
+      end
+    end
+  end
+
+  always @(*) begin
+    io_MCU_DATA_OUT_EN = 2'b00;
+    if(clockArea_globalRegsCS) begin
+      case(io_MCU_ADDR)
+        8'h0, 8'h01, 8'h02, 8'h03 : begin
+        end
+        8'h04 : begin
+        end
+        default : begin
+          io_MCU_DATA_OUT_EN = 2'b00;
+        end
+      endcase
+    end else begin
+      if(clockArea_idePrimaryRegsCS) begin
+        io_MCU_DATA_OUT_EN = clockArea_primary_mcuDataOutputEn;
+      end else begin
+        io_MCU_DATA_OUT_EN = clockArea_secondary_mcuDataOutputEn;
+      end
+    end
+  end
+
+  assign _zz_io_MCU_DATA_OUT = 64'h0000000063407782;
+  assign when_OpenGDEMU_l71 = io_MCU_WR[0];
+  assign when_OpenGDEMU_l72 = io_MCU_WR[1];
+  always @(posedge io_MCU_CLK or posedge io_MCU_RST) begin
+    if(io_MCU_RST) begin
+      clockArea_primary_dataOutput <= 16'hffff;
+      clockArea_primary_dataOutputEn <= 1'b0;
+      clockArea_primary_mcuDataOutput <= 16'hffff;
+      clockArea_primary_mcuIRQ <= 1'b0;
+      clockArea_primary_DEVICE <= 8'h0;
+      clockArea_primary_HOB <= 1'b0;
+      clockArea_primary_SRST <= 1'b0;
+      clockArea_primary_nIEN <= 1'b0;
+      clockArea_primary_BSY <= 1'b1;
+      clockArea_primary_DRDY <= 1'b0;
+      clockArea_primary_DF <= 1'b0;
+      clockArea_primary_DRQ <= 1'b0;
+      clockArea_primary_ERR <= 1'b0;
+      clockArea_primary_COMMAND <= 8'h0;
+      clockArea_primary_COMMAND_PEND <= 1'b0;
+      clockArea_primary_LBALow <= 8'h0;
+      clockArea_primary_LBALowPrev <= 8'h0;
+      clockArea_primary_LBAMid <= 8'h0;
+      clockArea_primary_LBAMidPrev <= 8'h0;
+      clockArea_primary_LBAHigh <= 8'h0;
+      clockArea_primary_LBAHighPrev <= 8'h0;
+      clockArea_primary_ABRT <= 1'b0;
+      clockArea_primary_Features <= 8'h0;
+      clockArea_primary_SectorCount <= 16'h0;
+      clockArea_primary_testReg <= 16'hcafe;
+      clockArea_secondary_dataOutput <= 16'hffff;
+      clockArea_secondary_dataOutputEn <= 1'b0;
+      clockArea_secondary_mcuDataOutput <= 16'hffff;
+      clockArea_secondary_mcuIRQ <= 1'b0;
+      clockArea_secondary_DEVICE <= 8'h0;
+      clockArea_secondary_HOB <= 1'b0;
+      clockArea_secondary_SRST <= 1'b0;
+      clockArea_secondary_nIEN <= 1'b0;
+      clockArea_secondary_BSY <= 1'b1;
+      clockArea_secondary_DRDY <= 1'b0;
+      clockArea_secondary_DF <= 1'b0;
+      clockArea_secondary_DRQ <= 1'b0;
+      clockArea_secondary_ERR <= 1'b0;
+      clockArea_secondary_COMMAND <= 8'h0;
+      clockArea_secondary_COMMAND_PEND <= 1'b0;
+      clockArea_secondary_LBALow <= 8'h0;
+      clockArea_secondary_LBALowPrev <= 8'h0;
+      clockArea_secondary_LBAMid <= 8'h0;
+      clockArea_secondary_LBAMidPrev <= 8'h0;
+      clockArea_secondary_LBAHigh <= 8'h0;
+      clockArea_secondary_LBAHighPrev <= 8'h0;
+      clockArea_secondary_ABRT <= 1'b0;
+      clockArea_secondary_Features <= 8'h0;
+      clockArea_secondary_SectorCount <= 16'h0;
+      clockArea_secondary_testReg <= 16'hcafe;
+    end else begin
+      if(when_IDEDeviceRegs_l59) begin
+        clockArea_primary_LBALowPrev <= clockArea_primary_LBALow;
+      end
+      if(when_IDEDeviceRegs_l61) begin
+        clockArea_primary_LBAMidPrev <= clockArea_primary_LBAMid;
+      end
+      if(when_IDEDeviceRegs_l63) begin
+        clockArea_primary_LBAHighPrev <= clockArea_primary_LBAHigh;
+      end
+      if(when_IDEDeviceRegs_l106) begin
+        clockArea_primary_BSY <= 1'b1;
+        clockArea_primary_DRDY <= 1'b0;
+        clockArea_primary_DRQ <= 1'b0;
+        clockArea_primary_COMMAND <= 8'h0;
+        clockArea_primary_LBALow <= 8'h0;
+        clockArea_primary_LBALowPrev <= 8'h0;
+        clockArea_primary_LBAMid <= 8'h0;
+        clockArea_primary_LBAMidPrev <= 8'h0;
+        clockArea_primary_LBAHigh <= 8'h0;
+        clockArea_primary_LBAHighPrev <= 8'h0;
+        clockArea_primary_COMMAND_PEND <= 1'b0;
+      end else begin
+        if(when_IDEDeviceRegs_l123) begin
+          clockArea_primary_BSY <= 1'b0;
+          clockArea_primary_DRDY <= 1'b1;
         end
       end
-      if(when_PATARegisters_l129) begin
-        ideRegs_DEVICE <= io_pataBus_DATA_IN[7 : 0];
+      if(when_IDEDeviceRegs_l129) begin
+        clockArea_primary_dataOutputEn <= 1'b0;
       end
-      if(ideRegs_deviceSelected) begin
-        if(ideRegs_regBlock0) begin
-          if(when_PATARegisters_l154) begin
-            if(io_pataBus_WR) begin
-              ideRegs_Features <= io_pataBus_DATA_IN[7 : 0];
-            end
-          end
-          if(when_PATARegisters_l165) begin
-            if(io_pataBus_WR) begin
-              ideRegs_SectorCount[15 : 8] <= ideRegs_SectorCount[7 : 0];
-              ideRegs_SectorCount[7 : 0] <= io_pataBus_DATA_IN[7 : 0];
-            end
-          end
-          if(when_PATARegisters_l182) begin
-            if(io_pataBus_WR) begin
-              ideRegs_LBALowPrev <= ideRegs_LBALow;
-              ideRegs_LBALow <= io_pataBus_DATA_IN[7 : 0];
-            end
-          end
-          if(when_PATARegisters_l199) begin
-            if(io_pataBus_WR) begin
-              ideRegs_LBAMidPrev <= ideRegs_LBAMid;
-              ideRegs_LBAMid <= io_pataBus_DATA_IN[7 : 0];
-            end
-          end
-          if(when_PATARegisters_l214) begin
-            if(io_pataBus_WR) begin
-              ideRegs_LBAHighPrev <= ideRegs_LBAHigh;
-              ideRegs_LBAHigh <= io_pataBus_DATA_IN[7 : 0];
-            end
-          end
-          if(when_PATARegisters_l243) begin
-            if(io_pataBus_WR) begin
-              ideRegs_COMMAND <= io_pataBus_DATA_IN[7 : 0];
-              ideRegs_BSY <= 1'b1;
-              ideRegs_COMMAND_PEND <= 1'b1;
-            end
-          end
-        end
-        if(ideRegs_regBlock1) begin
-          if(when_PATARegisters_l276) begin
-            if(io_pataBus_WR) begin
-              ideRegs_HOB <= io_pataBus_DATA_IN[7];
-              ideRegs_SRST <= io_pataBus_DATA_IN[2];
-              ideRegs_nIEN <= io_pataBus_DATA_IN[1];
-            end
-          end
+      if(when_IDEDeviceRegs_l151) begin
+        clockArea_primary_DEVICE <= io_IDE_DATA_IN[7 : 0];
+      end
+      if(when_IDEDeviceRegs_l159) begin
+        clockArea_primary_dataOutput <= 16'hdada;
+      end
+      if(when_IDEDeviceRegs_l170) begin
+        clockArea_primary_dataOutput <= clockArea_primary_readFIFOStream_io_pop_payload;
+        if(clockArea_primary_RD) begin
+          clockArea_primary_dataOutputEn <= 1'b1;
         end
       end
-      if(when_MCURegisters_l17) begin
-        if(when_MCURegisters_l26) begin
-          ideRegs_COMMAND_PEND <= io_mcuBus_DATA_IN[1];
+      if(when_IDEDeviceRegs_l185) begin
+        clockArea_primary_dataOutput[2] <= clockArea_primary_ABRT;
+        if(clockArea_primary_RD) begin
+          clockArea_primary_dataOutputEn <= 1'b1;
         end
       end
-      if(when_MCURegisters_l32) begin
-        if(when_MCURegisters_l39) begin
-          ideRegs_ERR <= io_mcuBus_DATA_IN[0];
-          ideRegs_DRQ <= io_mcuBus_DATA_IN[3];
-          ideRegs_DF <= io_mcuBus_DATA_IN[5];
-          ideRegs_DRDY <= io_mcuBus_DATA_IN[6];
-          ideRegs_BSY <= io_mcuBus_DATA_IN[7];
+      if(when_IDEDeviceRegs_l193) begin
+        if(clockArea_primary_WR) begin
+          clockArea_primary_Features <= io_IDE_DATA_IN[7 : 0];
         end
       end
-      if(when_MCURegisters_l48) begin
-        if(when_MCURegisters_l50) begin
-          ideRegs_DEVICE <= io_mcuBus_DATA_IN[7 : 0];
+      if(when_IDEDeviceRegs_l200) begin
+        if(clockArea_primary_HOB) begin
+          clockArea_primary_dataOutput[7 : 0] <= clockArea_primary_SectorCount[15 : 8];
+        end else begin
+          clockArea_primary_dataOutput[7 : 0] <= clockArea_primary_SectorCount[7 : 0];
+        end
+        if(clockArea_primary_RD) begin
+          clockArea_primary_dataOutputEn <= 1'b1;
+        end
+        if(clockArea_primary_WR) begin
+          clockArea_primary_SectorCount[15 : 8] <= clockArea_primary_SectorCount[7 : 0];
+          clockArea_primary_SectorCount[7 : 0] <= io_IDE_DATA_IN[7 : 0];
         end
       end
-      if(when_MCURegisters_l55) begin
-        if(when_MCURegisters_l57) begin
-          ideRegs_ABRT <= io_mcuBus_DATA_IN[3];
+      if(when_IDEDeviceRegs_l219) begin
+        if(clockArea_primary_HOB) begin
+          clockArea_primary_dataOutput[7 : 0] <= clockArea_primary_LBALowPrev;
+        end else begin
+          clockArea_primary_dataOutput[7 : 0] <= clockArea_primary_LBALow;
+        end
+        if(clockArea_primary_RD) begin
+          clockArea_primary_dataOutputEn <= 1'b1;
+        end
+        if(clockArea_primary_WR) begin
+          clockArea_primary_LBALow <= io_IDE_DATA_IN[7 : 0];
         end
       end
-      if(when_MCURegisters_l62) begin
-        if(when_MCURegisters_l65) begin
-          ideRegs_COMMAND <= io_mcuBus_DATA_IN[7 : 0];
+      if(when_IDEDeviceRegs_l237) begin
+        if(clockArea_primary_HOB) begin
+          clockArea_primary_dataOutput[7 : 0] <= clockArea_primary_LBAMidPrev;
+        end else begin
+          clockArea_primary_dataOutput[7 : 0] <= clockArea_primary_LBAMid;
         end
-        if(when_MCURegisters_l68) begin
-          ideRegs_Features <= io_mcuBus_DATA_IN[15 : 8];
+        if(clockArea_primary_RD) begin
+          clockArea_primary_dataOutputEn <= 1'b1;
         end
-      end
-      if(when_MCURegisters_l73) begin
-        if(when_MCURegisters_l76) begin
-          ideRegs_SectorCount[7 : 0] <= io_mcuBus_DATA_IN[7 : 0];
-        end
-        if(when_MCURegisters_l79) begin
-          ideRegs_SectorCount[15 : 8] <= io_mcuBus_DATA_IN[15 : 8];
+        if(clockArea_primary_WR) begin
+          clockArea_primary_LBAMid <= io_IDE_DATA_IN[7 : 0];
         end
       end
-      if(when_MCURegisters_l84) begin
-        if(when_MCURegisters_l87) begin
-          ideRegs_LBALow <= io_mcuBus_DATA_IN[7 : 0];
+      if(when_IDEDeviceRegs_l253) begin
+        if(clockArea_primary_HOB) begin
+          clockArea_primary_dataOutput[7 : 0] <= clockArea_primary_LBAHighPrev;
+        end else begin
+          clockArea_primary_dataOutput[7 : 0] <= clockArea_primary_LBAHigh;
         end
-        if(when_MCURegisters_l90) begin
-          ideRegs_LBAMid <= io_mcuBus_DATA_IN[15 : 8];
+        if(clockArea_primary_RD) begin
+          clockArea_primary_dataOutputEn <= 1'b1;
         end
-      end
-      if(when_MCURegisters_l95) begin
-        if(when_MCURegisters_l99) begin
-          ideRegs_LBAHigh <= io_mcuBus_DATA_IN[7 : 0];
-        end
-        if(when_MCURegisters_l102) begin
-          ideRegs_LBALowPrev <= io_mcuBus_DATA_IN[15 : 8];
+        if(clockArea_primary_WR) begin
+          clockArea_primary_LBAHigh <= io_IDE_DATA_IN[7 : 0];
         end
       end
-      if(when_MCURegisters_l107) begin
-        if(when_MCURegisters_l111) begin
-          ideRegs_LBAMidPrev <= io_mcuBus_DATA_IN[7 : 0];
+      if(when_IDEDeviceRegs_l269) begin
+        clockArea_primary_dataOutput[7 : 0] <= clockArea_primary_DEVICE;
+        if(clockArea_primary_RD) begin
+          clockArea_primary_dataOutputEn <= 1'b1;
         end
-        if(when_MCURegisters_l114) begin
-          ideRegs_LBAHighPrev <= io_mcuBus_DATA_IN[15 : 8];
+      end
+      if(when_IDEDeviceRegs_l284) begin
+        clockArea_primary_dataOutput[7] <= clockArea_primary_BSY;
+        clockArea_primary_dataOutput[6] <= clockArea_primary_DRDY;
+        clockArea_primary_dataOutput[5] <= clockArea_primary_DF;
+        clockArea_primary_dataOutput[3] <= clockArea_primary_DRQ;
+        clockArea_primary_dataOutput[0] <= clockArea_primary_ERR;
+        if(clockArea_primary_RD) begin
+          clockArea_primary_dataOutputEn <= 1'b1;
         end
+      end
+      if(when_IDEDeviceRegs_l296) begin
+        if(clockArea_primary_WR) begin
+          clockArea_primary_COMMAND <= io_IDE_DATA_IN[7 : 0];
+          clockArea_primary_BSY <= 1'b1;
+          clockArea_primary_COMMAND_PEND <= 1'b1;
+        end
+      end
+      if(when_IDEDeviceRegs_l320) begin
+        clockArea_primary_dataOutput[7] <= clockArea_primary_BSY;
+        clockArea_primary_dataOutput[6] <= clockArea_primary_DRDY;
+        clockArea_primary_dataOutput[5] <= clockArea_primary_DF;
+        clockArea_primary_dataOutput[3] <= clockArea_primary_DRQ;
+        clockArea_primary_dataOutput[0] <= clockArea_primary_ERR;
+        if(clockArea_primary_RD) begin
+          clockArea_primary_dataOutputEn <= 1'b1;
+        end
+      end
+      if(when_IDEDeviceRegs_l331) begin
+        if(clockArea_primary_WR) begin
+          clockArea_primary_HOB <= io_IDE_DATA_IN[7];
+          clockArea_primary_SRST <= io_IDE_DATA_IN[2];
+          clockArea_primary_nIEN <= io_IDE_DATA_IN[1];
+        end
+      end
+      if(when_IDEDeviceRegs_l340) begin
+        clockArea_primary_dataOutput[15 : 0] <= clockArea_primary_testReg;
+        if(clockArea_primary_RD) begin
+          clockArea_primary_dataOutputEn <= 1'b1;
+        end
+        if(clockArea_primary_WR) begin
+          clockArea_primary_testReg <= clockArea_primary_dataOutput[15 : 0];
+        end
+      end
+      clockArea_primary_mcuIRQ <= clockArea_primary_irqDelay_3;
+      if(when_IDEDeviceRegs_l362) begin
+        clockArea_primary_mcuDataOutput[0] <= 1'b0;
+        clockArea_primary_mcuDataOutput[1] <= clockArea_primary_COMMAND_PEND;
+        if(when_IDEDeviceRegs_l371) begin
+          clockArea_primary_COMMAND_PEND <= io_MCU_DATA_IN[1];
+        end
+      end
+      if(when_IDEDeviceRegs_l389) begin
+        clockArea_primary_mcuDataOutput[0] <= clockArea_primary_ERR;
+        clockArea_primary_mcuDataOutput[3] <= clockArea_primary_DRQ;
+        clockArea_primary_mcuDataOutput[5] <= clockArea_primary_DF;
+        clockArea_primary_mcuDataOutput[6] <= clockArea_primary_DRDY;
+        clockArea_primary_mcuDataOutput[7] <= clockArea_primary_BSY;
+        if(when_IDEDeviceRegs_l396) begin
+          clockArea_primary_ERR <= io_MCU_DATA_IN[0];
+          clockArea_primary_DRQ <= io_MCU_DATA_IN[3];
+          clockArea_primary_DF <= io_MCU_DATA_IN[5];
+          clockArea_primary_DRDY <= io_MCU_DATA_IN[6];
+          clockArea_primary_BSY <= io_MCU_DATA_IN[7];
+        end
+      end
+      if(when_IDEDeviceRegs_l405) begin
+        clockArea_primary_mcuDataOutput[7 : 0] <= clockArea_primary_DEVICE;
+        if(when_IDEDeviceRegs_l407) begin
+          clockArea_primary_DEVICE <= io_MCU_DATA_IN[7 : 0];
+        end
+      end
+      if(when_IDEDeviceRegs_l412) begin
+        clockArea_primary_mcuDataOutput[3] <= clockArea_primary_ABRT;
+        if(when_IDEDeviceRegs_l414) begin
+          clockArea_primary_ABRT <= io_MCU_DATA_IN[3];
+        end
+      end
+      if(when_IDEDeviceRegs_l419) begin
+        clockArea_primary_mcuDataOutput[7 : 0] <= clockArea_primary_COMMAND;
+        clockArea_primary_mcuDataOutput[15 : 8] <= clockArea_primary_Features;
+        if(when_IDEDeviceRegs_l422) begin
+          clockArea_primary_COMMAND <= io_MCU_DATA_IN[7 : 0];
+        end
+        if(when_IDEDeviceRegs_l425) begin
+          clockArea_primary_Features <= io_MCU_DATA_IN[15 : 8];
+        end
+      end
+      if(when_IDEDeviceRegs_l430) begin
+        clockArea_primary_mcuDataOutput <= clockArea_primary_SectorCount;
+        if(when_IDEDeviceRegs_l433) begin
+          clockArea_primary_SectorCount[7 : 0] <= io_MCU_DATA_IN[7 : 0];
+        end
+        if(when_IDEDeviceRegs_l436) begin
+          clockArea_primary_SectorCount[15 : 8] <= io_MCU_DATA_IN[15 : 8];
+        end
+      end
+      if(when_IDEDeviceRegs_l441) begin
+        clockArea_primary_mcuDataOutput[7 : 0] <= clockArea_primary_LBALow;
+        clockArea_primary_mcuDataOutput[15 : 8] <= clockArea_primary_LBAMid;
+        if(when_IDEDeviceRegs_l444) begin
+          clockArea_primary_LBALow <= io_MCU_DATA_IN[7 : 0];
+        end
+        if(when_IDEDeviceRegs_l447) begin
+          clockArea_primary_LBAMid <= io_MCU_DATA_IN[15 : 8];
+        end
+      end
+      if(when_IDEDeviceRegs_l452) begin
+        clockArea_primary_mcuDataOutput[7 : 0] <= clockArea_primary_LBAHigh;
+        clockArea_primary_mcuDataOutput[15 : 8] <= clockArea_primary_LBALowPrev;
+        if(when_IDEDeviceRegs_l456) begin
+          clockArea_primary_LBAHigh <= io_MCU_DATA_IN[7 : 0];
+        end
+        if(when_IDEDeviceRegs_l459) begin
+          clockArea_primary_LBALowPrev <= io_MCU_DATA_IN[15 : 8];
+        end
+      end
+      if(when_IDEDeviceRegs_l464) begin
+        clockArea_primary_mcuDataOutput[7 : 0] <= clockArea_primary_LBAMidPrev;
+        clockArea_primary_mcuDataOutput[15 : 8] <= clockArea_primary_LBAHighPrev;
+        if(when_IDEDeviceRegs_l468) begin
+          clockArea_primary_LBAMidPrev <= io_MCU_DATA_IN[7 : 0];
+        end
+        if(when_IDEDeviceRegs_l471) begin
+          clockArea_primary_LBAHighPrev <= io_MCU_DATA_IN[15 : 8];
+        end
+      end
+      if(when_IDEDeviceRegs_l476) begin
+        clockArea_primary_mcuDataOutput <= clockArea_primary_writeFIFOStream_io_pop_payload;
+      end
+      if(when_IDEDeviceRegs_l485) begin
+        clockArea_primary_mcuDataOutput[10 : 0] <= clockArea_primary_readFIFOStream_io_occupancy;
+      end
+      if(when_IDEDeviceRegs_l489) begin
+        clockArea_primary_mcuDataOutput[10 : 0] <= clockArea_primary_writeFIFOStream_io_occupancy;
+      end
+      if(when_IDEDeviceRegs_l493) begin
+        clockArea_primary_mcuDataOutput <= 16'hc0de;
+      end
+      if(when_IDEDeviceRegs_l59_1) begin
+        clockArea_secondary_LBALowPrev <= clockArea_secondary_LBALow;
+      end
+      if(when_IDEDeviceRegs_l61_1) begin
+        clockArea_secondary_LBAMidPrev <= clockArea_secondary_LBAMid;
+      end
+      if(when_IDEDeviceRegs_l63_1) begin
+        clockArea_secondary_LBAHighPrev <= clockArea_secondary_LBAHigh;
+      end
+      if(when_IDEDeviceRegs_l106_1) begin
+        clockArea_secondary_BSY <= 1'b1;
+        clockArea_secondary_DRDY <= 1'b0;
+        clockArea_secondary_DRQ <= 1'b0;
+        clockArea_secondary_COMMAND <= 8'h0;
+        clockArea_secondary_LBALow <= 8'h0;
+        clockArea_secondary_LBALowPrev <= 8'h0;
+        clockArea_secondary_LBAMid <= 8'h0;
+        clockArea_secondary_LBAMidPrev <= 8'h0;
+        clockArea_secondary_LBAHigh <= 8'h0;
+        clockArea_secondary_LBAHighPrev <= 8'h0;
+        clockArea_secondary_COMMAND_PEND <= 1'b0;
+      end else begin
+        if(when_IDEDeviceRegs_l123_1) begin
+          clockArea_secondary_BSY <= 1'b0;
+          clockArea_secondary_DRDY <= 1'b1;
+        end
+      end
+      if(when_IDEDeviceRegs_l129_1) begin
+        clockArea_secondary_dataOutputEn <= 1'b0;
+      end
+      if(when_IDEDeviceRegs_l151_1) begin
+        clockArea_secondary_DEVICE <= io_IDE_DATA_IN[7 : 0];
+      end
+      if(when_IDEDeviceRegs_l159_1) begin
+        clockArea_secondary_dataOutput <= 16'hdada;
+      end
+      if(when_IDEDeviceRegs_l170_1) begin
+        clockArea_secondary_dataOutput <= clockArea_secondary_readFIFOStream_io_pop_payload;
+        if(clockArea_secondary_RD) begin
+          clockArea_secondary_dataOutputEn <= 1'b1;
+        end
+      end
+      if(when_IDEDeviceRegs_l185_1) begin
+        clockArea_secondary_dataOutput[2] <= clockArea_secondary_ABRT;
+        if(clockArea_secondary_RD) begin
+          clockArea_secondary_dataOutputEn <= 1'b1;
+        end
+      end
+      if(when_IDEDeviceRegs_l193_1) begin
+        if(clockArea_secondary_WR) begin
+          clockArea_secondary_Features <= io_IDE_DATA_IN[7 : 0];
+        end
+      end
+      if(when_IDEDeviceRegs_l200_1) begin
+        if(clockArea_secondary_HOB) begin
+          clockArea_secondary_dataOutput[7 : 0] <= clockArea_secondary_SectorCount[15 : 8];
+        end else begin
+          clockArea_secondary_dataOutput[7 : 0] <= clockArea_secondary_SectorCount[7 : 0];
+        end
+        if(clockArea_secondary_RD) begin
+          clockArea_secondary_dataOutputEn <= 1'b1;
+        end
+        if(clockArea_secondary_WR) begin
+          clockArea_secondary_SectorCount[15 : 8] <= clockArea_secondary_SectorCount[7 : 0];
+          clockArea_secondary_SectorCount[7 : 0] <= io_IDE_DATA_IN[7 : 0];
+        end
+      end
+      if(when_IDEDeviceRegs_l219_1) begin
+        if(clockArea_secondary_HOB) begin
+          clockArea_secondary_dataOutput[7 : 0] <= clockArea_secondary_LBALowPrev;
+        end else begin
+          clockArea_secondary_dataOutput[7 : 0] <= clockArea_secondary_LBALow;
+        end
+        if(clockArea_secondary_RD) begin
+          clockArea_secondary_dataOutputEn <= 1'b1;
+        end
+        if(clockArea_secondary_WR) begin
+          clockArea_secondary_LBALow <= io_IDE_DATA_IN[7 : 0];
+        end
+      end
+      if(when_IDEDeviceRegs_l237_1) begin
+        if(clockArea_secondary_HOB) begin
+          clockArea_secondary_dataOutput[7 : 0] <= clockArea_secondary_LBAMidPrev;
+        end else begin
+          clockArea_secondary_dataOutput[7 : 0] <= clockArea_secondary_LBAMid;
+        end
+        if(clockArea_secondary_RD) begin
+          clockArea_secondary_dataOutputEn <= 1'b1;
+        end
+        if(clockArea_secondary_WR) begin
+          clockArea_secondary_LBAMid <= io_IDE_DATA_IN[7 : 0];
+        end
+      end
+      if(when_IDEDeviceRegs_l253_1) begin
+        if(clockArea_secondary_HOB) begin
+          clockArea_secondary_dataOutput[7 : 0] <= clockArea_secondary_LBAHighPrev;
+        end else begin
+          clockArea_secondary_dataOutput[7 : 0] <= clockArea_secondary_LBAHigh;
+        end
+        if(clockArea_secondary_RD) begin
+          clockArea_secondary_dataOutputEn <= 1'b1;
+        end
+        if(clockArea_secondary_WR) begin
+          clockArea_secondary_LBAHigh <= io_IDE_DATA_IN[7 : 0];
+        end
+      end
+      if(when_IDEDeviceRegs_l269_1) begin
+        clockArea_secondary_dataOutput[7 : 0] <= clockArea_secondary_DEVICE;
+        if(clockArea_secondary_RD) begin
+          clockArea_secondary_dataOutputEn <= 1'b1;
+        end
+      end
+      if(when_IDEDeviceRegs_l284_1) begin
+        clockArea_secondary_dataOutput[7] <= clockArea_secondary_BSY;
+        clockArea_secondary_dataOutput[6] <= clockArea_secondary_DRDY;
+        clockArea_secondary_dataOutput[5] <= clockArea_secondary_DF;
+        clockArea_secondary_dataOutput[3] <= clockArea_secondary_DRQ;
+        clockArea_secondary_dataOutput[0] <= clockArea_secondary_ERR;
+        if(clockArea_secondary_RD) begin
+          clockArea_secondary_dataOutputEn <= 1'b1;
+        end
+      end
+      if(when_IDEDeviceRegs_l296_1) begin
+        if(clockArea_secondary_WR) begin
+          clockArea_secondary_COMMAND <= io_IDE_DATA_IN[7 : 0];
+          clockArea_secondary_BSY <= 1'b1;
+          clockArea_secondary_COMMAND_PEND <= 1'b1;
+        end
+      end
+      if(when_IDEDeviceRegs_l320_1) begin
+        clockArea_secondary_dataOutput[7] <= clockArea_secondary_BSY;
+        clockArea_secondary_dataOutput[6] <= clockArea_secondary_DRDY;
+        clockArea_secondary_dataOutput[5] <= clockArea_secondary_DF;
+        clockArea_secondary_dataOutput[3] <= clockArea_secondary_DRQ;
+        clockArea_secondary_dataOutput[0] <= clockArea_secondary_ERR;
+        if(clockArea_secondary_RD) begin
+          clockArea_secondary_dataOutputEn <= 1'b1;
+        end
+      end
+      if(when_IDEDeviceRegs_l331_1) begin
+        if(clockArea_secondary_WR) begin
+          clockArea_secondary_HOB <= io_IDE_DATA_IN[7];
+          clockArea_secondary_SRST <= io_IDE_DATA_IN[2];
+          clockArea_secondary_nIEN <= io_IDE_DATA_IN[1];
+        end
+      end
+      if(when_IDEDeviceRegs_l340_1) begin
+        clockArea_secondary_dataOutput[15 : 0] <= clockArea_secondary_testReg;
+        if(clockArea_secondary_RD) begin
+          clockArea_secondary_dataOutputEn <= 1'b1;
+        end
+        if(clockArea_secondary_WR) begin
+          clockArea_secondary_testReg <= clockArea_secondary_dataOutput[15 : 0];
+        end
+      end
+      clockArea_secondary_mcuIRQ <= clockArea_secondary_irqDelay_3;
+      if(when_IDEDeviceRegs_l362_1) begin
+        clockArea_secondary_mcuDataOutput[0] <= 1'b1;
+        clockArea_secondary_mcuDataOutput[1] <= clockArea_secondary_COMMAND_PEND;
+        if(when_IDEDeviceRegs_l371_1) begin
+          clockArea_secondary_COMMAND_PEND <= io_MCU_DATA_IN[1];
+        end
+      end
+      if(when_IDEDeviceRegs_l389_1) begin
+        clockArea_secondary_mcuDataOutput[0] <= clockArea_secondary_ERR;
+        clockArea_secondary_mcuDataOutput[3] <= clockArea_secondary_DRQ;
+        clockArea_secondary_mcuDataOutput[5] <= clockArea_secondary_DF;
+        clockArea_secondary_mcuDataOutput[6] <= clockArea_secondary_DRDY;
+        clockArea_secondary_mcuDataOutput[7] <= clockArea_secondary_BSY;
+        if(when_IDEDeviceRegs_l396_1) begin
+          clockArea_secondary_ERR <= io_MCU_DATA_IN[0];
+          clockArea_secondary_DRQ <= io_MCU_DATA_IN[3];
+          clockArea_secondary_DF <= io_MCU_DATA_IN[5];
+          clockArea_secondary_DRDY <= io_MCU_DATA_IN[6];
+          clockArea_secondary_BSY <= io_MCU_DATA_IN[7];
+        end
+      end
+      if(when_IDEDeviceRegs_l405_1) begin
+        clockArea_secondary_mcuDataOutput[7 : 0] <= clockArea_secondary_DEVICE;
+        if(when_IDEDeviceRegs_l407_1) begin
+          clockArea_secondary_DEVICE <= io_MCU_DATA_IN[7 : 0];
+        end
+      end
+      if(when_IDEDeviceRegs_l412_1) begin
+        clockArea_secondary_mcuDataOutput[3] <= clockArea_secondary_ABRT;
+        if(when_IDEDeviceRegs_l414_1) begin
+          clockArea_secondary_ABRT <= io_MCU_DATA_IN[3];
+        end
+      end
+      if(when_IDEDeviceRegs_l419_1) begin
+        clockArea_secondary_mcuDataOutput[7 : 0] <= clockArea_secondary_COMMAND;
+        clockArea_secondary_mcuDataOutput[15 : 8] <= clockArea_secondary_Features;
+        if(when_IDEDeviceRegs_l422_1) begin
+          clockArea_secondary_COMMAND <= io_MCU_DATA_IN[7 : 0];
+        end
+        if(when_IDEDeviceRegs_l425_1) begin
+          clockArea_secondary_Features <= io_MCU_DATA_IN[15 : 8];
+        end
+      end
+      if(when_IDEDeviceRegs_l430_1) begin
+        clockArea_secondary_mcuDataOutput <= clockArea_secondary_SectorCount;
+        if(when_IDEDeviceRegs_l433_1) begin
+          clockArea_secondary_SectorCount[7 : 0] <= io_MCU_DATA_IN[7 : 0];
+        end
+        if(when_IDEDeviceRegs_l436_1) begin
+          clockArea_secondary_SectorCount[15 : 8] <= io_MCU_DATA_IN[15 : 8];
+        end
+      end
+      if(when_IDEDeviceRegs_l441_1) begin
+        clockArea_secondary_mcuDataOutput[7 : 0] <= clockArea_secondary_LBALow;
+        clockArea_secondary_mcuDataOutput[15 : 8] <= clockArea_secondary_LBAMid;
+        if(when_IDEDeviceRegs_l444_1) begin
+          clockArea_secondary_LBALow <= io_MCU_DATA_IN[7 : 0];
+        end
+        if(when_IDEDeviceRegs_l447_1) begin
+          clockArea_secondary_LBAMid <= io_MCU_DATA_IN[15 : 8];
+        end
+      end
+      if(when_IDEDeviceRegs_l452_1) begin
+        clockArea_secondary_mcuDataOutput[7 : 0] <= clockArea_secondary_LBAHigh;
+        clockArea_secondary_mcuDataOutput[15 : 8] <= clockArea_secondary_LBALowPrev;
+        if(when_IDEDeviceRegs_l456_1) begin
+          clockArea_secondary_LBAHigh <= io_MCU_DATA_IN[7 : 0];
+        end
+        if(when_IDEDeviceRegs_l459_1) begin
+          clockArea_secondary_LBALowPrev <= io_MCU_DATA_IN[15 : 8];
+        end
+      end
+      if(when_IDEDeviceRegs_l464_1) begin
+        clockArea_secondary_mcuDataOutput[7 : 0] <= clockArea_secondary_LBAMidPrev;
+        clockArea_secondary_mcuDataOutput[15 : 8] <= clockArea_secondary_LBAHighPrev;
+        if(when_IDEDeviceRegs_l468_1) begin
+          clockArea_secondary_LBAMidPrev <= io_MCU_DATA_IN[7 : 0];
+        end
+        if(when_IDEDeviceRegs_l471_1) begin
+          clockArea_secondary_LBAHighPrev <= io_MCU_DATA_IN[15 : 8];
+        end
+      end
+      if(when_IDEDeviceRegs_l476_1) begin
+        clockArea_secondary_mcuDataOutput <= clockArea_secondary_writeFIFOStream_io_pop_payload;
+      end
+      if(when_IDEDeviceRegs_l485_1) begin
+        clockArea_secondary_mcuDataOutput[10 : 0] <= clockArea_secondary_readFIFOStream_io_occupancy;
+      end
+      if(when_IDEDeviceRegs_l489_1) begin
+        clockArea_secondary_mcuDataOutput[10 : 0] <= clockArea_secondary_writeFIFOStream_io_occupancy;
+      end
+      if(when_IDEDeviceRegs_l493_1) begin
+        clockArea_secondary_mcuDataOutput <= 16'hc0de;
       end
     end
   end
 
   always @(posedge io_MCU_CLK) begin
-    io_pataBus_RD_regNext <= io_pataBus_RD;
+    clockArea_primary_WR_regNext <= clockArea_primary_WR;
+    clockArea_primary_SRST_regNext <= clockArea_primary_SRST;
+    clockArea_primary_irqDelay_1 <= clockArea_primary_irqDelay_0;
+    clockArea_primary_irqDelay_2 <= clockArea_primary_irqDelay_1;
+    clockArea_primary_irqDelay_3 <= clockArea_primary_irqDelay_2;
+    clockArea_secondary_WR_regNext <= clockArea_secondary_WR;
+    clockArea_secondary_SRST_regNext <= clockArea_secondary_SRST;
+    clockArea_secondary_irqDelay_1 <= clockArea_secondary_irqDelay_0;
+    clockArea_secondary_irqDelay_2 <= clockArea_secondary_irqDelay_1;
+    clockArea_secondary_irqDelay_3 <= clockArea_secondary_irqDelay_2;
   end
 
   always @(posedge io_MCU_CLK) begin
-    io_pataBus_WR_regNext_1 <= io_pataBus_WR;
+    clockArea_primary_RD_regNext <= clockArea_primary_RD;
+  end
+
+  always @(posedge io_MCU_CLK) begin
+    clockArea_primary_WR_regNext_1 <= clockArea_primary_WR;
+  end
+
+  always @(posedge io_MCU_CLK) begin
+    clockArea_secondary_RD_regNext <= clockArea_secondary_RD;
+  end
+
+  always @(posedge io_MCU_CLK) begin
+    clockArea_secondary_WR_regNext_1 <= clockArea_secondary_WR;
+  end
+
+  always @(posedge io_MCU_CLK or posedge io_MCU_RST) begin
+    if(io_MCU_RST) begin
+      _zz_io_MCU_DATA_OUT_1 <= 16'h5aa5;
+    end else begin
+      if(when_OpenGDEMU_l71) begin
+        _zz_io_MCU_DATA_OUT_1[7 : 0] <= io_MCU_DATA_IN[7 : 0];
+      end
+      if(when_OpenGDEMU_l72) begin
+        _zz_io_MCU_DATA_OUT_1[15 : 8] <= io_MCU_DATA_IN[15 : 8];
+      end
+    end
   end
 
 
 endmodule
 
-//BufferCC replaced by BufferCC
+//MCURegisterManagerGenerator replaced by MCURegisterManagerGenerator
 
-module BufferCC (
-  input               io_dataIn,
-  output              io_dataOut,
-  input               io_MCU_CLK,
-  input               io_MCU_RST
+//IDEAddressDecode replaced by IDEAddressDecode
+
+//StreamFifo replaced by StreamFifo
+
+//StreamFifo replaced by StreamFifo
+
+module MCURegisterManagerGenerator (
 );
 
-  (* async_reg = "true" *) reg                 buffers_0;
-  (* async_reg = "true" *) reg                 buffers_1;
 
-  assign io_dataOut = buffers_1;
-  always @(posedge io_MCU_CLK or posedge io_MCU_RST) begin
-    if(io_MCU_RST) begin
-      buffers_0 <= 1'b0;
-      buffers_1 <= 1'b0;
-    end else begin
-      buffers_0 <= io_dataIn;
-      buffers_1 <= buffers_0;
-    end
-  end
 
+endmodule
+
+module IDEAddressDecode (
+  input      [1:0]    io_CSn,
+  input      [2:0]    io_ADDR,
+  output              io_DataRegister,
+  output              io_ErrorRegister,
+  output              io_FeaturesRegister,
+  output              io_SectorCountRegister,
+  output              io_LBALowRegister,
+  output              io_LBAMidRegister,
+  output              io_LBAHighRegister,
+  output              io_DeviceRegister,
+  output              io_CommandRegister,
+  output              io_StatusRegister,
+  output              io_DeviceControlRegister,
+  output              io_AlternateStatusRegister,
+  output              io_DebugTestpad
+);
+
+  wire                regBlock0;
+  wire                regBlock1;
+  wire                _zz_io_ErrorRegister;
+  wire                _zz_io_DeviceRegister;
+  wire                _zz_io_DeviceControlRegister;
+  wire                _zz_io_CommandRegister;
+  wire                _zz_io_CommandRegister_1;
+
+  assign regBlock0 = (io_CSn == 2'b10);
+  assign regBlock1 = (io_CSn == 2'b01);
+  assign _zz_io_ErrorRegister = ((io_ADDR == 3'b001) && regBlock0);
+  assign _zz_io_DeviceRegister = (io_ADDR == 3'b110);
+  assign _zz_io_DeviceControlRegister = (_zz_io_DeviceRegister && regBlock1);
+  assign _zz_io_CommandRegister = (io_ADDR == 3'b111);
+  assign _zz_io_CommandRegister_1 = (_zz_io_CommandRegister && regBlock0);
+  assign io_DataRegister = ((io_ADDR == 3'b000) && regBlock0);
+  assign io_ErrorRegister = _zz_io_ErrorRegister;
+  assign io_FeaturesRegister = _zz_io_ErrorRegister;
+  assign io_SectorCountRegister = ((io_ADDR == 3'b010) && regBlock0);
+  assign io_LBALowRegister = ((io_ADDR == 3'b011) && regBlock0);
+  assign io_LBAMidRegister = ((io_ADDR == 3'b100) && regBlock0);
+  assign io_LBAHighRegister = ((io_ADDR == 3'b101) && regBlock0);
+  assign io_DeviceRegister = (_zz_io_DeviceRegister && regBlock0);
+  assign io_CommandRegister = _zz_io_CommandRegister_1;
+  assign io_StatusRegister = _zz_io_CommandRegister_1;
+  assign io_DeviceControlRegister = _zz_io_DeviceControlRegister;
+  assign io_AlternateStatusRegister = _zz_io_DeviceControlRegister;
+  assign io_DebugTestpad = (_zz_io_CommandRegister && regBlock1);
 
 endmodule
 
@@ -818,7 +1369,7 @@ module StreamFifo (
   wire                logic_empty;
   wire                logic_full;
   reg                 _zz_io_pop_valid;
-  wire                when_Stream_l954;
+  wire                when_Stream_l1075;
   wire       [9:0]    logic_ptrDif;
   reg [15:0] logic_ram [0:1023];
 
@@ -901,7 +1452,7 @@ module StreamFifo (
   assign io_push_ready = (! logic_full);
   assign io_pop_valid = ((! logic_empty) && (! (_zz_io_pop_valid && (! logic_full))));
   assign io_pop_payload = _zz_logic_ram_port0;
-  assign when_Stream_l954 = (logic_pushing != logic_popping);
+  assign when_Stream_l1075 = (logic_pushing != logic_popping);
   assign logic_ptrDif = (logic_pushPtr_value - logic_popPtr_value);
   assign io_occupancy = {(logic_risingOccupancy && logic_ptrMatch),logic_ptrDif};
   assign io_availability = {((! logic_risingOccupancy) && logic_ptrMatch),_zz_io_availability};
@@ -915,7 +1466,7 @@ module StreamFifo (
       logic_pushPtr_value <= logic_pushPtr_valueNext;
       logic_popPtr_value <= logic_popPtr_valueNext;
       _zz_io_pop_valid <= (logic_popPtr_valueNext == logic_pushPtr_value);
-      if(when_Stream_l954) begin
+      if(when_Stream_l1075) begin
         logic_risingOccupancy <= logic_pushing;
       end
       if(io_flush) begin

@@ -2,6 +2,7 @@ package opengdemu
 
 import spinal.core._
 import spinal.lib._
+import spinal.lib.bus.simple._
 import java.time.Instant
 
 //Hardware definition
@@ -10,9 +11,11 @@ class OpenGDEMU extends Component {
         // Microcontroller Connections
         val MCU_CLK         = in Bool()
         val MCU_RST         = in Bool()
-        val MCU             = MCUInterface(8)
+        val MCU             = slave(MCUBus(8))
 
-        // DC Connections
+        // DC Data Connection
+        val IDE          = slave(IDEBus())
+
         // DC Audio
         val DC = new Bundle {
             val CDCLK        = in Bool()
@@ -20,23 +23,8 @@ class OpenGDEMU extends Component {
             val SDAT         = in Bool()
             val LRCK         = in Bool()
             val EMPH         = in Bool()
-
-            // DC Data
-            val RST          = in Bool()
-            val CSn          = in Bits(2 bits)
-            val WR           = in Bool()
-            val RD           = in Bool()
-            val ADDR         = in UInt(3 bits)
-            val DATA_IN      = in Bits(16 bits)
-            val DATA_OUT     = out Bits(16 bits)
-            val DATA_OUT_EN  = out Bool()
-
-            // ?
-            val DMARQ        = out Bool()
-            val DMACK        = in Bool()
-            val IORDY        = out Bool()
-            val INTRQ        = out Bool()
         }
+        
     }
 
     val clockDom = ClockDomain(
@@ -45,79 +33,71 @@ class OpenGDEMU extends Component {
     )
 
     val clockArea = new ClockingArea(clockDom) {
-        val globalRegsCS : Bool = io.MCU.ADDR(7 downto 6) === 0
-        val masterRegsCS : Bool = (io.MCU.ADDR(7) === True) & (io.MCU.ADDR(6) === False)
-        val slaveRegsCS  : Bool = (io.MCU.ADDR(7) === True) & (io.MCU.ADDR(6) === True)
-        // val extraRegs := io.MCU.ADDR(7 downto 6) === 3
+        val globalRegsCS : Bool = ~io.MCU.ADDR(7)
+        val ideRegsCS : Bool = io.MCU.ADDR(7)
+        val idePrimaryRegsCS : Bool = ~io.MCU.ADDR(6);
+        val ideSecondaryRegsCS : Bool = io.MCU.ADDR(6);
+        
+        val primary = PrimaryIDEDeviceRegs(io.IDE, io.MCU);
+        val secondary = SecondaryIDEDeviceRegs(io.IDE, io.MCU);
+   
+        io.IDE.DATA_OUT := primary.dataOutputEn ? primary.dataOutput | secondary.dataOutput
+        // io.IDE.DATA_OUT := 0
+        io.IDE.DATA_OUT_EN := primary.dataOutputEn | secondary.dataOutputEn
+        // io.IDE.DATA_OUT_EN := False
+        io.IDE.DMARQ := False
+        io.IDE.IORDY := False
+        io.IDE.INTRQ := False
 
-        io.MCU.DATA_OUT                 := 0
 
-        // Global Registers
+        // io.MCU.IRQ := primary.mcuIRQ | secondary.mcuIRQ
+        io.MCU.IRQ := False
+        io.MCU.DATA_OUT := 0xC0DE
+        io.MCU.DATA_OUT_EN := 0
         when (globalRegsCS) {
-            val ts : Long = Instant.now.getEpochSecond
-            Console.printf("Compiled at 0x%X\n", ts)
-            val tsWords = Array(
-                B((ts >> 0).toInt  & 0xFFFF, 16 bits),
-                B((ts >> 16).toInt & 0xFFFF, 16 bits),
-                B((ts >> 32).toInt & 0xFFFF, 16 bits),
-                B((ts >> 48).toInt & 0xFFFF, 16 bits))
+            val timestamp : Long = Instant.now.getEpochSecond;
+            val timestampBits = U(timestamp, 64 bits)
+            Console.printf("Compiled at 0x%X\n", timestamp)
 
             // Version Registers (0-3)
-            for( i <- 0 to 3 )
-                when (io.MCU.ADDR === i) { io.MCU.DATA_OUT := tsWords(i) }
+            switch (io.MCU.ADDR) {
+                is (0, 1, 2, 3) {
+                    // io.MCU.DATA_OUT := tsWords(io.MCU.ADDR) 
+                    io.MCU.DATA_OUT := timestampBits.subdivideIn(16 bits)(io.MCU.ADDR(1 downto 0)).asBits
+                }
+                is (4) {
+                    val testReg = Reg(Bits(16 bits)) init(0x5AA5)
+                    io.MCU.DATA_OUT := testReg
+                    when (io.MCU.WR(0)) { testReg(7 downto 0) := io.MCU.DATA_IN(7 downto 0) }
+                    when (io.MCU.WR(1)) { testReg(15 downto 8) := io.MCU.DATA_IN(15 downto 8) }
+                }
+                default {
+                    io.MCU.DATA_OUT := 0
+                    io.MCU.DATA_OUT_EN := 0
+                }
+            }
 
-            // Test Data Register
-            val testReg = Reg(Bits(16 bits)) init(0x5AA5)
-            when (io.MCU.ADDR === 4) {
-                io.MCU.DATA_OUT := testReg
-                when (io.MCU.WR(0)) { testReg(7 downto 0) := io.MCU.DATA_IN(7 downto 0) }
-                when (io.MCU.WR(1)) { testReg(15 downto 8) := io.MCU.DATA_IN(15 downto 8) }
+        }.otherwise {
+            when ( idePrimaryRegsCS ) {
+                io.MCU.DATA_OUT := primary.mcuDataOutput
+                io.MCU.DATA_OUT_EN := primary.mcuDataOutputEn
+            }.otherwise {
+                io.MCU.DATA_OUT := secondary.mcuDataOutput
+                io.MCU.DATA_OUT_EN := secondary.mcuDataOutputEn
             }
         }
+    
 
-        // val CS0_SYNC = { BufferCC(~io.DC.CSn(0), False) }
-        // val CS1_SYNC = { BufferCC(~io.DC.CSn(1), False) }
-        val WR_SYNC = BufferCC(io.DC.WR, False)
-        val RD_SYNC = BufferCC(io.DC.RD, False)
+        // val WR_SYNC = BufferCC(~io.DC.WRn, False)
+        // val RD_SYNC = BufferCC(~io.DC.RDn, False)
 
-        val DC_DATA_IN_SYNC = Reg(Bits(16 bits)) init(0)
-        DC_DATA_IN_SYNC := io.DC.DATA_IN
-        val DC_ADDR_SYNC = Reg(UInt(3 bits)) init(0)
-        DC_ADDR_SYNC := io.DC.ADDR
-        val DC_CS_SYNC = Reg(Bits(2 bits)) init(0)
-        DC_CS_SYNC := ~io.DC.CSn
+        // val DC_DATA_IN_SYNC = Reg(Bits(16 bits)) init(0)
+        // DC_DATA_IN_SYNC := io.DC.DATA_IN
+        // val DC_ADDR_SYNC = Reg(UInt(3 bits)) init(0)
+        // DC_ADDR_SYNC := io.DC.ADDR
+        // val DC_CS_SYNC = Reg(Bits(2 bits)) init(0)
+        // DC_CS_SYNC := ~io.DC.CSn
         
-
-        // val masterDevice;
-        // create hdd as slave device
-        val slaveDevice = new PATA_HDD(1);
-        slaveDevice.io.pataBus.RST         := io.DC.RST
-        slaveDevice.io.pataBus.CS          := DC_CS_SYNC
-        slaveDevice.io.pataBus.WR          := WR_SYNC
-        slaveDevice.io.pataBus.RD          := RD_SYNC
-        slaveDevice.io.pataBus.ADDR        := DC_ADDR_SYNC
-        slaveDevice.io.pataBus.DATA_IN     := DC_DATA_IN_SYNC
-        slaveDevice.io.pataBus.DMACK       := io.DC.DMACK
-        io.DC.DATA_OUT                     := slaveDevice.io.pataBus.DATA_OUT
-        io.DC.DATA_OUT_EN                  := slaveDevice.io.pataBus.DATA_OUT_EN
-        io.DC.DMARQ                        := slaveDevice.io.pataBus.DMARQ
-        io.DC.INTRQ                        := slaveDevice.io.pataBus.INTRQ
-        io.DC.IORDY                        := slaveDevice.io.pataBus.IORDY
-
-        slaveDevice.io.mcuBus.WR           := slaveRegsCS ? io.MCU.WR | 0 
-        slaveDevice.io.mcuBus.RD           := slaveRegsCS ? io.MCU.RD | False
-        slaveDevice.io.mcuBus.ADDR         := io.MCU.ADDR(5 downto 0)
-        slaveDevice.io.mcuBus.DATA_IN      := io.MCU.DATA_IN
-        
-        when (masterRegsCS) {
-            io.MCU.DATA_OUT                := "16'xC0DE"
-        }
-        when (slaveRegsCS) {
-            io.MCU.DATA_OUT                := slaveDevice.io.mcuBus.DATA_OUT
-            // io.MCU.DATA_OUT                := "16'xCAFE"
-
-        }
-        io.MCU.IRQ                         := slaveDevice.io.mcuBus.IRQ
     }
 }
 
@@ -125,19 +105,30 @@ import spinal.sim._
 import spinal.core.sim._
 
 object OpenGDEMUVerilog {
+    def checkSims() {
+        val testbenchOutput : String = "out";
+
+        TestIDERegister.simulate(testbenchOutput);
+        TestMCURegister.simulate(testbenchOutput);
+        TestIDEAddressDecode.simulate(testbenchOutput);
+
+    }
+
     def main(args: Array[String]) {
         if(args.length == 0) {
             Console.err.println("Must pass targetPath as parameter");
             sys.exit(1)
         }
+        
+        checkSims()
 
-
-        Console.println("Generating OpenGDEMU Verilog")
+        Console.println("Generating OpenGDEMU Verilog");
         SpinalConfig(
             mode=Verilog,
             targetDirectory=args(0)
-        ).generate(new OpenGDEMU).printPruned()
-        // SpinalVerilog(new OpenGDEMU).printPruned()
+        )
+        .generate(new OpenGDEMU)
+        .printPruned();
         
 
         // SimConfig
@@ -230,6 +221,7 @@ object OpenGDEMUVerilog {
         //     }
     }
 }
+
 
 
 

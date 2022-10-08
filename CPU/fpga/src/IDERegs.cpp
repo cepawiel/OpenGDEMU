@@ -5,7 +5,7 @@ bool __attribute__((optimize("O0"))) IDERegs::GetCommand(CommandRegs &regs) {
         m_FPGARegs[DISK_TEST_REG],
         m_FPGARegs[DISK_TEST_REG]
     };
-    if(testVal[1] != 0xCAFE) asm("bkpt");
+    if(testVal[1] != 0xC0DE) asm("bkpt");
 
     uint16_t a, b[10];   
     a = m_FPGARegs[COMMAND_FEATURES_REG];
