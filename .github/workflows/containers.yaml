@@ -18,7 +18,7 @@ jobs:
 
   build-quartus-container:
     name: Build Quartus II 13.0 SP1 Container
-    runs-on: [linux, x64]
+    # runs-on: [linux, x64]
     needs: [check-secrets]
     permissions:
       packages: write
@@ -123,4 +123,3 @@ jobs:
           context: ./Containers/SpinalHDL
           tags: ${{ steps.meta.outputs.tags }}
           push: ${{ (needs.check-secrets.outputs.github-token-exists == 'true') }}
-
