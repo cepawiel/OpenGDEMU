@@ -1,6 +1,0 @@
-<workspace>
-	<batchBuild></batchBuild>
-	<project>
-		<path>$WS_DIR$\sercom-usart-spi-i2c-slave-demo_flash.ewp</path>
-	</project>
-</workspace>

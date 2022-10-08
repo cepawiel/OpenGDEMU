@@ -1,6 +1,0 @@
-<workspace>
-	<batchBuild></batchBuild>
-	<project>
-		<path>$WS_DIR$\wav_audio_player_flash.ewp</path>
-	</project>
-</workspace>
