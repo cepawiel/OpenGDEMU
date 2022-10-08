@@ -56,7 +56,7 @@ jobs:
             ghcr.io/${{ github.repository }}/quartus2
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=raw,value={{branch}}-latest,enable=!{{is_default_branch}}
+            type=raw,value={{branch}}-latest,enable=${{ ({{is_default_branch}} == false) }}
             type=sha,prefix={{branch}}-
             type=ref,event=tag
             type=ref,event=pr
@@ -110,7 +110,7 @@ jobs:
             ghcr.io/${{ github.repository }}/spinalhdl
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
-            type=raw,value={{branch}}-edge,enable=!{{is_default_branch}}
+            type=raw,value={{branch}}-edge,enable=${{ ({{is_default_branch}} == false) }}
             type=raw,value={{branch}}-{{sha}}
             type=ref,event=tag
             type=ref,event=pr
