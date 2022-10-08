@@ -1,6 +1,0 @@
-<workspace>
-	<batchBuild></batchBuild>
-	<project>
-		<path>$WS_DIR$\apps_peer2peer.ewp</path>
-	</project>
-</workspace>
