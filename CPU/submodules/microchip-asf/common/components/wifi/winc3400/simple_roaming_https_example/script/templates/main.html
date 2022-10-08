@@ -1,0 +1,114 @@
+<!doctype html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ROAMING</title>
+    <meta name="viewport" content="width=device-width">
+    <style>
+    .container {
+        width: 450px;
+        margin: 50px auto 0 auto;
+    }
+
+    .gauge {
+        width: 470px;
+        height: 470px;
+    }
+	
+	img {
+      width: 210px;
+      height: 70px;
+    }
+	
+    </style>
+   </head>
+
+    <body>
+	
+    <img src='../static/logo/microchip.jpg' alt="logo"/>
+	
+	<h1 align="center">Simple Roaming Test App</h1>
+
+    <div class="container">
+        <div id="g1" class="gauge"></div>
+    </div>
+	
+    <div id="response1"></div>
+	
+    <script src="../static/raphael-2.1.4.min.js"></script>
+    <script src="../static/justgage.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+    <script type="text/javascript">
+
+	  document.addEventListener("DOMContentLoaded", function(event) {
+
+      var g1 = new JustGage({
+        id: 'g1',
+        value: 0,
+        min: 0,
+        max: 100,
+		title: "",
+        label: "Counter",
+        pointer: true,
+		pointerOptions: {
+          toplength: -15,
+          bottomlength: 10,
+          bottomwidth: 12,
+          color: '#8e8e93',
+          stroke: '#ffffff',
+          stroke_width: 3,
+          stroke_linecap: 'round'
+        },
+        donut: true,
+		showInnerShadow: true,
+		shadowOpacity: 1,
+        shadowSize: 5,
+        shadowVerticalOffset: 10,
+        gaugeWidthScale: 0.6,
+        customSectors: [{
+          color: '#ff0000',
+          lo: 0,
+          hi: 30
+        }, {
+		  color: '#00ff00',
+          lo: 31,
+          hi: 60
+        },
+		{
+          color: '#0000ff',
+          lo: 61,
+          hi: 100
+        }],
+        counter: true
+      });
+		
+		setInterval(function() {
+		    $.ajax({
+            url: "/pay",
+		    type: "GET",
+            success: function(resp) {
+			    $('#response1').text(resp.data1);
+				if(resp.data1 == "roam")
+				{
+					$("#response1").hide();
+					g1.txtTitle.attr
+					({
+						"text": "ROAMED TO NEW AP!",
+						"font-size": 40,
+						"fill": "red",
+						"fill-opacity": "1"
+					});
+				}
+				else
+				{
+				    $("#response1").hide();
+			        g1.refresh(resp.data1);
+				}
+           }
+        });
+        }, 500);
+	});
+	  
+  </script>
+    </body>
+</html>
