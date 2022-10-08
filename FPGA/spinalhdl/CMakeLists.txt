@@ -18,7 +18,7 @@ add_custom_command(
     COMMAND ${SPINALHDL_DOCKER_CMD}
     VERBATIM
     DEPENDS
-        ${SPINALHDL_IMAGE_HASH}
+        # ${SPINALHDL_IMAGE_HASH}
         ${spinal_SOURCES}
         build.sc
     )
