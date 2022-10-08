@@ -24,7 +24,7 @@ set(QUARTUS_CONTAINER_VOL
 add_custom_command(
     OUTPUT ${QUARTUS_OUTPUT_RBF}
     # COMMAND ${Docker_EXECUTABLE} run ${QUARTUS_CONTAINER_VOL} ${QUARTUS_CONTAINER_ENV} --rm quartus13 quartus_sh --flow compile quartus/OpenGDEMU
-    COMMAND ${Docker_EXECUTABLE} run ${QUARTUS_CONTAINER_VOL} ${QUARTUS_CONTAINER_ENV} --rm ghcr.io/cepawiel/opengdemu/quartus2:latest quartus_sh --flow compile quartus/OpenGDEMU
+    COMMAND ${Docker_EXECUTABLE} run --rm ${QUARTUS_CONTAINER_VOL} ${QUARTUS_CONTAINER_ENV} ghcr.io/cepawiel/opengdemu/quartus2:latest quartus_sh --flow compile quartus/OpenGDEMU
     DEPENDS
         ${verilog_SOURCES}
         # ${QUARTUS_IMAGE_HASH}
