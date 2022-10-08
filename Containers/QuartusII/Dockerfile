@@ -11,6 +11,9 @@ RUN mkdir -p /installer \
     && wget -q -c http://download.altera.com/akdlm/software/acdsinst/13.0sp1/232/ib_tar/Quartus-web-13.0.1.232-linux.tar -O - | tar -x \
     && mkdir -p /opt/quartus \
     && /installer/setup.sh --mode unattended --installdir /opt/quartus \
+    && rm -rf /opt/quartus/nios2eds \
+    && rm -rf /opt/quartus/modelsim_ase \
+    && rm -rf /opt/quartus/modelsim_ae \
     && rm -rf /installer
 
 FROM base
