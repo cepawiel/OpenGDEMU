@@ -22,7 +22,6 @@ jobs:
 
   build-quartus-container:
     name: Build Quartus II 13.0 SP1 Container
-    # runs-on: ubuntu-latest
     runs-on: [linux, x64]
     needs: [check-secrets]
     permissions:
