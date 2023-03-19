@@ -53,9 +53,7 @@ RUN git clone https://github.com/steveicarus/iverilog --depth=1 --branch v11_0 &
  && autoconf \
  && ./configure \
  && make -j$(nproc) \
- && make install DESTDIR="/tmp/iverilog" \
- && ls -la /tmp/iverilog \
- && cd ..
+ && make install DESTDIR="/tmp/iverilog"
 
 #
 # Add deps to base image: GHDL, Verilator, iverilog, VUnit and cocotb
@@ -73,7 +71,7 @@ RUN apt-get install -y --no-install-recommends \
 
 # COPY --from=build /tmp/ghdl-llvm.tgz /tmp/ghdl.tgz
 # COPY --from=build /tmp/verilator/ /usr/local/
-COPY --from=build /tmp/iverilog/ /usr/local/
+COPY --from=build /tmp/iverilog/ /
 
 # RUN tar -xzf /tmp/ghdl.tgz -C /usr/local \
 #  && rm -f /tmp/*
