@@ -65,3 +65,5 @@ jobs:
           context: ./Containers/QuartusII
           tags: ${{ steps.meta.outputs.tags }}
           push: ${{ (needs.check-secrets.outputs.github-token-exists == 'true') }}
+          cache-from: type=gha,scope=quartus2
+          cache-to: type=gha,mode=max,scope=quartus2
