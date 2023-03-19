@@ -7,4 +7,4 @@ chown -R $USER_UID:$USER_GID out/
 
 echo $@
 # sudo -u $USER_NAME mill opengdemu.runMain opengdemu.OpenGDEMUVerilog
-sudo -u $USER_NAME mill $@
+sudo -u $USER_NAME $@
