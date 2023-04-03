@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 project(opengdemu)
 
 # Check to find docker
@@ -10,4 +13,3 @@ endif()
 
 add_subdirectory(CPU)
 add_subdirectory(FPGA)
-add_subdirectory(Containers)
