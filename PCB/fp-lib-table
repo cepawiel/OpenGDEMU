@@ -1,3 +1,0 @@
-(fp_lib_table
-  (lib (name footprints)(type KiCad)(uri ${KIPRJMOD}/UltraLibrarian/ATSAM3U4EA-AU/footprints.pretty)(options "")(descr ""))
-)
