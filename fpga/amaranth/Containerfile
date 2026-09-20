@@ -1,11 +1,42 @@
-FROM ubuntu:mantic
+# Amaranth toolchain for regenerating fpga/amaranth/out/OpenGDEMUCore.v.
+#
+# The previous base, ubuntu:mantic, is end-of-life: every archive.ubuntu.com
+# repository now answers "does not have a Release file" and the image stopped
+# building entirely.
+FROM ubuntu:noble
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Install Amaranth Prerequsites
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y python3 python3-pip gtkwave yosys
+# gtkwave is for viewing the VCDs the testbenches write; python3-venv because
+# noble enforces PEP 668, so pip refuses to touch the system interpreter.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        python3 python3-venv python3-pip gtkwave ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --user --upgrade amaranth
+# Both versions are pinned because both decide the generated Verilog, and that
+# Verilog is committed -- an unpinned rebuild that silently emits different RTL
+# would change the bitstream without touching a single source file.
+#
+# `builtin-yosys` pulls in amaranth's own yosys rather than the distribution's.
+# That is the point: apt's yosys tracks whatever the Ubuntu release froze, so
+# the output would depend on the base image. This way the base image is free to
+# move without moving the RTL.
+# amaranth-yosys is pinned separately: `amaranth[builtin-yosys]` would take
+# whatever post-release is current, and that version string is stamped into the
+# generated file's banner comment, so an unpinned rebuild dirties the file by a
+# line for no change in RTL.
+ARG AMARANTH_VERSION=0.5.8
+ARG AMARANTH_YOSYS_VERSION=0.50.0.0.post123
 
+ENV VIRTUAL_ENV=/opt/amaranth-env
+RUN python3 -m venv $VIRTUAL_ENV \
+    && $VIRTUAL_ENV/bin/pip install --no-cache-dir \
+        "amaranth==${AMARANTH_VERSION}" \
+        "amaranth-yosys==${AMARANTH_YOSYS_VERSION}"
+
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Without this amaranth prefers a system yosys if one is ever installed,
+# which would reintroduce exactly the drift the pin above removes.
+ENV AMARANTH_USE_YOSYS=builtin
