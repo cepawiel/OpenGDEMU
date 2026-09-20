@@ -1,5 +1,4 @@
 project(FPGA)
-add_subdirectory(spinalhdl)
 add_subdirectory(quartus)
 
 file(GLOB_RECURSE verilog_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/sources/**")

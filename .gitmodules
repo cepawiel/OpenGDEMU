@@ -1,3 +1,0 @@
-[submodule "FPGA/spinalhdl/SpinalHDL"]
-	path = FPGA/spinalhdl/SpinalHDL
-	url = git@github.com:SpinalHDL/SpinalHDL.git

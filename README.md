@@ -10,7 +10,6 @@ some of those questions as time goes on.
 - #### cmake
 - #### arm-none-eabi-gcc
 - #### docker
-    - Generating Verilog from SpinalHDL
     - Running Quartus 2
         - This program is a nightmare to get working locally on any modern
             linux machine. Lots of broken dependencies and old static libraries, so avoid
@@ -64,7 +63,5 @@ Might be too slow, never used Verilator before this just sounded like a good exc
 - [FatFS](http://elm-chan.org/fsw/ff/00index_e.html) [FatFS License](http://elm-chan.org/fsw/ff/doc/appnote.html#license)
 - [Microchip ASF](https://github.com/alfred-ai/microchip-asf)
 - [umm_malloc](https://github.com/rhempel/umm_malloc) MIT
-- [SpinalHDL](https://github.com/SpinalHDL/SpinalHDL)
-- [VexRiscv](https://github.com/SpinalHDL/VexRiscv)
 
 Any omissions are not intentional. Please open an issue if you notice any missed attributions.

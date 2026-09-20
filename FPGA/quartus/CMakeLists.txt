@@ -28,7 +28,6 @@ add_custom_command(
     DEPENDS
         ${verilog_SOURCES}
         # ${QUARTUS_IMAGE_HASH}
-        ${GENERATED_VERILOG_OUTPUT}
         ../sources/OpenGDEMUTop.v
     )
 add_custom_target(OpenGDEMU_rbf DEPENDS ${QUARTUS_OUTPUT_RBF})
