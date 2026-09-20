@@ -1,7 +1,54 @@
 build/
 
-# The Quartus installer tarball is 4.5 GB. The Dockerfile beside it is not.
+# The Quartus installer tarball is 4.5 GB. The Containerfile beside it is not.
 Containers/QuartusII_x64/*.tar
 Containers/QuartusII_x64/license.dat
 
 Containers/SymbiYosys/data
+
+MCU/*/target
+
+# Rust MCU build artifacts
+mcu/*/target
+common/*/target
+
+# Stale: kept so any leftover local clone of embassy doesn't get re-added.
+mcu/embassy/
+
+# fpga — Quartus
+fpga/Quartus/db/
+fpga/Quartus/incremental_db/
+fpga/Quartus/greybox_tmp/
+fpga/Quartus/simulation/
+fpga/Quartus/output_files/*
+!fpga/Quartus/output_files/OpenGDEMU.rbf
+
+# fpga — Verilator
+fpga/verilator/obj_dir/
+fpga/verilator/out/
+fpga/verilator/bin/
+
+# fpga — Amaranth
+fpga/amaranth/amaranth_env/
+fpga/amaranth/vcd/
+__pycache__/
+
+# Hardware test artifacts (dc-farm jobs, deploy.sh runs): video, RTT and
+# serial logs per run. Tens of megabytes and reproducible -- judge from the
+# copy under test_output/, don't version it.
+test_output/
+
+# Waveform dumps from Verilator/Amaranth runs.
+vcd/
+*.vcd
+
+# Local scratch: replay logs, prebuilt host binaries, third-party kernel and
+# toolchain trees, reference PDFs. All either reproducible or re-fetchable.
+*.log
+tools/dc-tool-ser
+tools/dreamcast-linux/
+tools/linux/*.bin.zst
+*.pdf
+
+# In progress, not yet a workspace member.
+dc/apps/linuxboot/

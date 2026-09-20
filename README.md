@@ -9,14 +9,21 @@ some of those questions as time goes on.
 ### Required Pre-Reqs
 - #### cmake
 - #### arm-none-eabi-gcc
-- #### docker
+- #### podman (or docker)
+    - Generating Verilog from Amaranth
     - Running Quartus 2
         - This program is a nightmare to get working locally on any modern
-            linux machine. Lots of broken dependencies and old static libraries, so avoid
-            trying a local install; use the image built from Containers/QuartusII_x64
-            instead. No license file is needed -- Quartus II 13.0.1 Web Edition covers
-            Cyclone II, which is the part on this board.
+            linux machine. Lots of broken dependencies and old static libraries,
+            so avoid trying a local install.
             Open source bitstream generation when :'(
+        - Build the image from `Containers/QuartusII_x64`, then compile with
+            `fpga/build_fpga.sh`. No license file is needed: 13.0.1 Web Edition
+            is the free tier, and Cyclone II is in it.
+        - The installer tarball is gitignored and 4.5 GB. Put it in
+            `Containers/QuartusII_x64/` and the build uses it; leave it out and
+            the build downloads it. Altera's CDN refuses anything that does not
+            look like a browser, so the Containerfile's wget sends a full browser
+            header block -- if you fetch it by hand and get a 403, that is why.
 
 ### Current Status
 - Can successfully execute code on the SAM3U
@@ -57,6 +64,7 @@ Might be too slow, never used Verilator before this just sounded like a good exc
 
 
 ### Projects in Use
+- [Amaranth](https://github.com/amaranth-lang/amaranth) BSD-2-Clause
 - [CMSIS]()
 - [Trice](https://github.com/rokath/trice) MIT
 - [Argon RTOS ](https://github.com/flit/argon-rtos) BSD-3-Clause
