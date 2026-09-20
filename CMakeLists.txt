@@ -12,4 +12,3 @@ endif()
 
 
 add_subdirectory(CPU)
-add_subdirectory(FPGA)
