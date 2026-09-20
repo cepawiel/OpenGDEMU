@@ -13,8 +13,10 @@ some of those questions as time goes on.
     - Generating Verilog from SpinalHDL
     - Running Quartus 2
         - This program is a nightmare to get working locally on any modern
-            linux machine. Will need to put your license.dat file into the Containers/QuartusII folder.
-            Lots of broken dependencies and old static libraries, so avoid trying a local install. 
+            linux machine. Lots of broken dependencies and old static libraries, so avoid
+            trying a local install; use the image built from Containers/QuartusII_x64
+            instead. No license file is needed -- Quartus II 13.0.1 Web Edition covers
+            Cyclone II, which is the part on this board.
             Open source bitstream generation when :'(
 
 ### Current Status

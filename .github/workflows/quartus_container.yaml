@@ -1,45 +1,57 @@
 name: Build QuartusII Container Image
 
-on: 
+on:
   push:
     branches: [main]
     paths:
       - '.github/workflows/quartus_container.yaml'
-      - 'Containers/QuartusII/**'
+      - 'Containers/QuartusII_x64/**'
+  pull_request:
+    paths:
+      - '.github/workflows/quartus_container.yaml'
+      - 'Containers/QuartusII_x64/**'
+  workflow_dispatch:
 
 jobs:
-  # idea from here https://stackoverflow.com/questions/70249519/how-to-check-if-a-secret-variable-is-empty-in-if-conditional-github-actions
-  check-secrets:
-    name: Checking if Github Token is Provided
-    runs-on: ubuntu-latest
-    outputs:
-      github-token-exists: ${{ steps.check-gh-token.outputs.defined }}
-    steps:
-        - id: check-gh-token
-          env:
-            GH_TOK: ${{ secrets.GITHUB_TOKEN }}
-          if: "${{ env.GH_TOK != '' }}"
-          run: echo "::set-output name=defined::true"
-
   build-quartus-container:
     name: Build Quartus II 13.0 SP1 Container
-    runs-on: [linux, x64]
-    needs: [check-secrets]
+    runs-on: ubuntu-latest
+    # Downloading 4.5 GB from Altera and running their unattended installer is
+    # slow, and the installer gets no faster for being watched.
+    timeout-minutes: 120
     permissions:
+      contents: read
       packages: write
 
     steps:
+      # A standard GitHub-hosted runner ships with ~25 GB free, and this build
+      # wants more than that: the 4.5 GB tarball, its ~4.5 GB extraction, the
+      # install tree, and then the image layers on top. Everything removed here
+      # is preinstalled tooling this build has no use for.
+      - name: Reclaim Runner Disk Space
+        run: |
+          df -h /
+          sudo rm -rf \
+            /usr/share/dotnet \
+            /usr/share/swift \
+            /usr/local/lib/android \
+            /usr/local/.ghcup \
+            /opt/ghc \
+            /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force
+          df -h /
+
       - name: Checkout Source
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v4
 
       - name: Setup Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
-      - name: Login to Github Container Registry
-        uses: docker/login-action@v2
+      # Pull requests from forks get a read-only token, and there is nowhere
+      # for them to push anyway, so they build and stop.
+      - name: Login to GitHub Container Registry
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -47,7 +59,7 @@ jobs:
 
       - name: Generate Image Tags
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: |
             ghcr.io/${{ github.repository }}/quartus2
@@ -58,12 +70,30 @@ jobs:
             type=ref,event=tag
             type=ref,event=pr
 
+      # The installer tarball is gitignored, so it is never in the checkout and
+      # the Containerfile's download branch is the one CI always takes. That is
+      # affordable because the triggers above only fire when the Containerfile
+      # itself changes, which is close to never.
+      #
+      # Altera's CDN 403s anything that does not look like a browser; the
+      # Containerfile's wget carries the header block that gets through. A 403
+      # here means that block has gone stale, not that the URL died.
+      #
+      # `file:` is not optional. Podman picks up a Containerfile by name, but
+      # this action runs buildx, which only ever auto-detects `Dockerfile` --
+      # without this it fails the build claiming the context has no Dockerfile.
+      #
+      # No GitHub Actions layer cache: the cache is capped at 10 GB per repo
+      # and the install layer alone is larger than that, so caching would
+      # evict itself on every run while adding an upload of the same size.
       - name: Build Quartus II 13.0 SP1 Container
-        id: quartus-container
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v6
         with:
-          context: ./Containers/QuartusII
+          context: ./Containers/QuartusII_x64
+          file: ./Containers/QuartusII_x64/Containerfile
           tags: ${{ steps.meta.outputs.tags }}
-          push: ${{ (needs.check-secrets.outputs.github-token-exists == 'true') }}
-          cache-from: type=gha,scope=quartus2
-          cache-to: type=gha,mode=max,scope=quartus2
+          push: ${{ github.event_name != 'pull_request' }}
+
+      - name: Report Remaining Disk Space
+        if: always()
+        run: df -h /

@@ -1,4 +1,7 @@
 build/
-Containers/QuartusII/home
-Containers/QuartusII/license.dat
+
+# The Quartus installer tarball is 4.5 GB. The Dockerfile beside it is not.
+Containers/QuartusII_x64/*.tar
+Containers/QuartusII_x64/license.dat
+
 Containers/SymbiYosys/data

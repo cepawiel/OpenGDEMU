@@ -1,0 +1,91 @@
+# Quartus II 13.0.1 Web Edition (the last release supporting Cyclone II, which
+# is what the EP2C5T144C8 on this board is) on a 64-bit host.
+#
+# The Quartus binaries themselves are 32-bit and stay that way -- this image is
+# "x64" only in its base userland. That is why the i386 multiarch libraries
+# below are not optional.
+#
+# Helpful Guide: https://gist.github.com/bkw777/a6a2888f482802f2e520165858268cd3
+
+FROM ubuntu:noble AS base
+
+RUN dpkg --add-architecture i386 \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        wget ca-certificates \
+        libc6:i386 libstdc++6:i386 \
+    && rm -rf /var/lib/apt/lists/*
+
+FROM base AS install
+
+ENV QUARTUS_DIR=/opt/quartus
+ENV INSTALL_DIR=/installer
+
+ARG QUARTUS_TAR=Quartus-web-13.0.1.232-linux.tar
+ARG QUARTUS_URL=https://download.altera.com/akdlm/software/acdsinst/13.0sp1/232/ib_tar/Quartus-web-13.0.1.232-linux.tar
+
+# Take the 4.5 GB installer from the build context if it is there, and fetch it
+# if it is not. `Containerfile` is listed first so the glob always matches at
+# least one file -- a COPY whose patterns match nothing is an error, which is
+# how you would otherwise have to write two of these to make one input optional.
+COPY Containerfile Quartus-web-*.tar* /ctx/
+
+# The download needs a browser's header block or Akamai answers 403. Not any
+# single header: sending only User-Agent, or only the three that a drop-one-out
+# bisect showed to be load-bearing (User-Agent, Accept-Encoding, Connection),
+# still gets refused -- the edge wants the whole plausible set, so that is what
+# is sent. Verified 2026-09-20; before working it out, this URL looked simply
+# dead from anything that was not a browser.
+#
+# Downloaded to a file rather than piped into tar: /bin/sh here is dash, which
+# has no `pipefail`, so a piped wget failure gets masked by tar's own and a 403
+# reports itself as "tar: Exiting with failure status".
+RUN mkdir -p $INSTALL_DIR \
+    && if [ ! -f "/ctx/$QUARTUS_TAR" ]; then \
+           echo "$QUARTUS_TAR not in the build context, downloading..."; \
+           wget -nv -c "$QUARTUS_URL" -O "/ctx/$QUARTUS_TAR" \
+               --header="User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0" \
+               --header="Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" \
+               --header="Accept-Language: en-US,en;q=0.5" \
+               --header="Accept-Encoding: gzip, deflate, br" \
+               --header="Upgrade-Insecure-Requests: 1" \
+               --header="Sec-Fetch-Dest: document" \
+               --header="Sec-Fetch-Mode: navigate" \
+               --header="Sec-Fetch-Site: none" \
+               --header="Sec-Fetch-User: ?1" \
+               --header="Connection: keep-alive"; \
+       else \
+           echo "Using $QUARTUS_TAR from the build context."; \
+       fi \
+    && tar -xf "/ctx/$QUARTUS_TAR" -C $INSTALL_DIR \
+    && test -x $INSTALL_DIR/setup.sh \
+    && rm -rf /ctx
+
+# Installer and prune in one layer: the pruned trees are ~4.2 GB, and a
+# separate RUN would leave every byte of them in the layer below anyway.
+#
+# Nothing here simulates -- Verilator drives the testbenches -- and nothing
+# here builds a Nios II core, so ModelSim and nios2eds are dead weight. On a
+# GitHub-hosted runner that is not merely tidiness: the full install does not
+# fit in the free space a standard runner has.
+RUN $INSTALL_DIR/setup.sh --mode unattended --unattendedmodeui minimal --installdir $QUARTUS_DIR \
+    && rm -rf $QUARTUS_DIR/modelsim_ae \
+              $QUARTUS_DIR/modelsim_ase \
+              $QUARTUS_DIR/nios2eds \
+              $QUARTUS_DIR/uninstall \
+              $INSTALL_DIR
+
+FROM base
+COPY --from=install /opt/quartus /opt/quartus
+
+ENV USER_NAME=quartus
+ENV USER_UID=1000
+ENV USER_GID=1000
+
+ENV PATH="/opt/quartus/quartus/bin:$PATH"
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends make \
+    && rm -rf /var/lib/apt/lists/*
+
+USER ubuntu
