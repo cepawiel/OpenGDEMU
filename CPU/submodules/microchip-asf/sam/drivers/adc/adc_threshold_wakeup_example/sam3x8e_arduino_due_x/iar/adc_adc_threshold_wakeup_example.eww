@@ -1,9 +1,0 @@
-<workspace>
-	<batchBuild></batchBuild>
-	<project>
-		<path>$WS_DIR$\adc_adc_threshold_wakeup_example_flash.ewp</path>
-	</project>
-	<project>
-		<path>$WS_DIR$\adc_adc_threshold_wakeup_example_sram.ewp</path>
-	</project>
-</workspace>

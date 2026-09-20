@@ -1,6 +1,0 @@
-<workspace>
-	<batchBuild></batchBuild>
-	<project>
-		<path>$WS_DIR$\pdca_pdca_usart_example_flash.ewp</path>
-	</project>
-</workspace>

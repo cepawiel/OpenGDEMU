@@ -1,6 +1,0 @@
-<workspace>
-	<batchBuild></batchBuild>
-	<project>
-		<path>$WS_DIR$\pdc_pdc_uart_example_flash.ewp</path>
-	</project>
-</workspace>

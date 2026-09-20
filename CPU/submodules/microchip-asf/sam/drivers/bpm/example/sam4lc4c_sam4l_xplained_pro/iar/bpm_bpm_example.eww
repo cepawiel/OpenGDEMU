@@ -1,6 +1,0 @@
-<workspace>
-	<batchBuild></batchBuild>
-	<project>
-		<path>$WS_DIR$\bpm_bpm_example_flash.ewp</path>
-	</project>
-</workspace>

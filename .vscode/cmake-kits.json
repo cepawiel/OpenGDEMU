@@ -1,6 +1,0 @@
-[
-    {
-        "name": "ARM GCC Toolchain File",
-        "toolchainFile": "CPU/gcc_toolchain.cmake"
-    }
-]
