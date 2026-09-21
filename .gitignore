@@ -52,3 +52,7 @@ tools/linux/*.bin.zst
 
 # In progress, not yet a workspace member.
 dc/apps/linuxboot/
+
+# svdtools htmlcompare output: a review aid for svd/patch.yml, not a
+# build input. Regenerate with gen.sh.
+mcu/atsam3u4e-pac/html/

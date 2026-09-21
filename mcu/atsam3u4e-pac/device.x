@@ -1,0 +1,26 @@
+PROVIDE(ID_RTT = DefaultHandler);
+PROVIDE(ID_PMC = DefaultHandler);
+PROVIDE(ID_EFC0 = DefaultHandler);
+PROVIDE(ID_EFC1 = DefaultHandler);
+PROVIDE(ID_UART = DefaultHandler);
+PROVIDE(ID_PIOA = DefaultHandler);
+PROVIDE(ID_PIOB = DefaultHandler);
+PROVIDE(ID_PIOC = DefaultHandler);
+PROVIDE(ID_USART0 = DefaultHandler);
+PROVIDE(ID_USART1 = DefaultHandler);
+PROVIDE(ID_USART2 = DefaultHandler);
+PROVIDE(ID_USART3 = DefaultHandler);
+PROVIDE(ID_HSMCI = DefaultHandler);
+PROVIDE(ID_TWI0 = DefaultHandler);
+PROVIDE(ID_TWI1 = DefaultHandler);
+PROVIDE(ID_SPI = DefaultHandler);
+PROVIDE(ID_SSC = DefaultHandler);
+PROVIDE(ID_TC0 = DefaultHandler);
+PROVIDE(ID_TC1 = DefaultHandler);
+PROVIDE(ID_TC2 = DefaultHandler);
+PROVIDE(ID_PWM = DefaultHandler);
+PROVIDE(ID_ADC12B = DefaultHandler);
+PROVIDE(ID_ADC = DefaultHandler);
+PROVIDE(ID_DMAC = DefaultHandler);
+PROVIDE(ID_UDPHS = DefaultHandler);
+

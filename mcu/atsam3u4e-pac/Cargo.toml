@@ -1,0 +1,15 @@
+[package]
+name = "atsam3u4e-pac"
+version = "0.1.0"
+edition = "2021"
+description = "A Peripheral Access Crate for the Atmel SAM3U4E SoC"
+license = "BSD-3-Clause"
+
+[dependencies]
+critical-section = { version = "1.0", optional = true }
+cortex-m = "0.7.6"
+cortex-m-rt = { version = "0.7", optional = true }
+vcell = "0.1.2"
+
+[features]
+rt = ["cortex-m-rt/device"]

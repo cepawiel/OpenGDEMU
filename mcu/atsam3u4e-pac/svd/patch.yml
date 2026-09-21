@@ -1,0 +1,33 @@
+# input svd
+_svd: "SAM3U4E.svd"
+
+RTT:
+  _add:
+    _interrupts:
+      ID_RTT:
+        description: Real-time Timer Interrupt
+        value: 3
+
+# at this time svd2rust doesn't handle them any 
+# differently so no point in merging
+# PIOA:
+#  PER:
+#    _array:
+#      "P*": {}
+
+_derive:
+  EFC1: EFC0
+  PIOB: PIOA
+  PIOC: PIOA
+  USART1: USART0
+  USART2: USART0
+  USART3: USART0
+  TWI1: TWI0
+
+
+# should probably fix at some point but don't need for now
+# enums have overlapping values
+CHIPID:
+  _delete:
+    CIDR
+
