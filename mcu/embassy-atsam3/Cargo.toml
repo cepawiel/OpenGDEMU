@@ -1,0 +1,34 @@
+[package]
+name = "embassy-atsam3"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cortex-m = { version = "0.7" }
+cortex-m-rt = { version = "0.7", features = [] }
+
+embedded-hal = { version = "0.2.7", features = ["unproven"] }
+
+embassy-hal-internal = { version = "0.5", features = ["cortex-m", "prio-bits-2"] }
+embassy-time = { version = "0.5", features = [] }
+embassy-time-driver = { version = "0.2", optional = true }
+embassy-time-queue-utils = { version = "0.3", optional = true }
+embassy-sync = "0.8"
+atsam3u4e-pac = { path = "../atsam3u4e-pac", features = ["critical-section"] }
+
+portable-atomic = { version = "1.0", features = ["critical-section"] }
+critical-section = "1.1"
+defmt = "0.3"
+lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
+
+
+[features]
+rt = ["atsam3u4e-pac/rt"]
+time-driver = [
+    "embassy-time/tick-hz-1_000",
+    "embassy-time-driver/tick-hz-1_000",
+    "dep:embassy-time-driver",
+    "dep:embassy-time-queue-utils",
+]
