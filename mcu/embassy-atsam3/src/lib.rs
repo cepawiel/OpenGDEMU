@@ -17,6 +17,10 @@ pub mod wdt;
 pub mod systick;
 pub mod rtt;
 pub mod clocks;
+// Nothing but the embassy-time driver, built on optional dependencies that
+// only the `time-driver` feature pulls in. `systick` already gates its
+// `timer::on_tick()` call the same way.
+#[cfg(feature = "time-driver")]
 pub mod timer;
 pub mod efc;
 pub mod gpio;

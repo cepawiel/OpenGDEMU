@@ -1,6 +1,10 @@
 
 
 
+// The PAC only re-exports `interrupt` under its own `rt` feature, which our
+// `rt` turns on. The handlers below are vector-table entries, so they are
+// meaningless without it anyway.
+#[cfg(feature = "rt")]
 use crate::pac::interrupt;
 // use embedded_hal_async::digital::Wait;
 use embedded_hal::digital::v2::{InputPin, PinState, OutputPin, toggleable, StatefulOutputPin};
@@ -186,6 +190,7 @@ pub fn pioa_is_low(pin: u8) -> bool {
     pioa.pdsr.read().bits() & (1u32 << pin) == 0
 }
 
+#[cfg(feature = "rt")]
 #[interrupt]
 unsafe fn ID_PIOA() {
     // Reading PIO_ISR clears the latched interrupt sources.
@@ -196,11 +201,13 @@ unsafe fn ID_PIOA() {
     }
 }
 
+#[cfg(feature = "rt")]
 #[interrupt]
 unsafe fn ID_PIOB() {
     debug!("PIOB IRQ");
 }
 
+#[cfg(feature = "rt")]
 #[interrupt]
 unsafe fn ID_PIOC() {
     debug!("PIOC IRQ");
