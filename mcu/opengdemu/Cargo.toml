@@ -1,0 +1,62 @@
+[package]
+name = "opengdemu"
+version = "0.1.1"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+embedded-hal = "0.2"
+cortex-m = { version = "0.7.6", features = ["inline-asm", "critical-section-single-core"] }
+cortex-m-rt = "0.7.0"
+panic-probe = { version = "0.3", features = ["print-defmt"] }
+critical-section = "1.1"
+static_cell = "2"
+gamecfg = { path = "../../common/gamecfg", features = ["defmt"] }
+lzma = { path = "../../common/lzma" }
+
+embassy-atsam3 = { path = "../embassy-atsam3", features = ["rt", "time-driver"] }
+embassy-time = "0.5"
+embassy-futures = "0.1"
+embassy-executor = { version = "0.10", features = ["platform-cortex-m", "executor-thread", "executor-interrupt", "defmt"] }
+
+defmt = "0.3"
+defmt-rtt = "0.4"
+
+embedded-sdmmc = { version = "0.9", default-features = false, features = ["defmt-log"] }
+heapless = { version = "0.8", features = ["defmt-03"] }
+
+
+[features]
+# Target the SAM3U2E instead of the 4E: one 128 K flash plane instead of two,
+# and 16 K of SRAM0 instead of 32 K. Selects `link/sam3u2e.x` (see build.rs),
+# moves `cdda::RING` into the otherwise-unused NFC SRAM, and caps MAX_IMAGES.
+# Build it as `DEFMT_LOG=off cargo build --release --features sam3u2e`; the
+# logging code is part of what has to come out to fit.
+sam3u2e = []
+
+# SD throughput benchmark at boot. Off by default: it takes ~6 s, which
+# delays the IDE task spawn past the point the DC starts issuing ATAPI
+# commands, and the console times out with a CDB-DRQ error.
+# Build with `cargo build --release --features sd-bench` to measure.
+sd-bench = []
+
+# Once-a-second FPGA liveness line on the UART. Off by default: uart_println!
+# is unsynchronized, so it interleaves mid-word with the IDE task's per-command
+# tracing and corrupts both streams.
+fpga-diag = []
+
+# Serve CD_READ data as an incrementing 16-bit word counter instead of real
+# disc content. A checksum only says "the payload differs"; a counter says how
+# -- a repeated value is a duplicated word (the FIFO did not advance in time),
+# a skipped value is a dropped word. Diagnostic builds only.
+dma-pattern = []
+
+[profile.dev]
+debug = 2
+
+[profile.release]
+debug = 2
+opt-level = "s"
+lto = "fat"
+codegen-units = 1

@@ -1,0 +1,40 @@
+[target.'cfg(all(target_arch = "arm", target_os = "none"))']
+runner = "probe-rs run --chip ATSAM3U4E --protocol swd"
+
+rustflags = [
+  "-Clink-args=-Map=target/openmenu.map",
+#  "-C", "linker=flip-link",
+  "-C", "link-arg=--nmagic",
+  "-C", "link-arg=-Tlink.x",
+  "-C", "link-arg=-Tdefmt.x",
+
+  # Code-size optimizations.
+  #   trap unreachable can save a lot of space, but requires nightly compiler.
+  #   uncomment the next line if you wish to enable it
+  # "-Z", "trap-unreachable=no",
+  "-C", "inline-threshold=5",
+  "-C", "no-vectorize-loops",
+]
+
+[build]
+target = "thumbv7m-none-eabi"
+
+[env]
+# Default to INFO so embedded-sdmmc + SD-card debug spew doesn't drown
+# out the IDE-side command logs we care about during DC bring-up.
+DEFMT_LOG = "info"
+# defmt-rtt's default ring buffer is 1024 bytes; we used to bump to
+# 16 KB but the SAM3U's SRAM is now better spent on the CD_READ
+# pre-stage buffer (16 KB) so the BIOS's full 14 KB IP.BIN request
+# can be delivered in one continuous DMA pass without FIFO underrun.
+#
+# The cost is real when the point of the run *is* the log: defmt-rtt skips
+# writes it has no room for, so a busy stretch -- a disc boot, where the IDE
+# task traces every command -- arrives at the host with lines missing, and a
+# trace that is a sample rather than a record can send you chasing an event
+# that was only ever dropped. For a bench session, build with a bigger one:
+#
+#     DEFMT_RTT_BUFFER_SIZE=16384 cargo build --release
+#
+# defmt-rtt reads it at compile time. Debug only -- it comes out of the same
+# SRAM the CD_READ buffer wants, so do not ship it.

@@ -1,0 +1,12 @@
+[build]
+target = "thumbv7m-none-eabi"
+
+[target.thumbv7m-none-eabi]
+rustflags = [
+  "-C", "link-arg=-Tupdater.x",
+  # Emit the raw image directly. There is no ELF loader on the other end --
+  # the firmware copies these bytes to SRAM1 and branches to offset 0 -- and
+  # producing the binary here avoids depending on objcopy being installed.
+  "-C", "link-arg=--oformat=binary",
+  "-C", "link-arg=--nmagic",
+]

@@ -1,0 +1,15 @@
+[package]
+name = "gamecfg"
+description = "The GAME.CFG per-folder metadata format, shared by the firmware and the console"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+# Let the firmware log these types. Off by default: the console side has no
+# defmt, and the format should not drag a logging framework into everything
+# that reads it.
+defmt = ["dep:defmt", "heapless/defmt-03"]
+
+[dependencies]
+heapless = "0.8"
+defmt = { version = "0.3", optional = true }

@@ -1,0 +1,7 @@
+[package]
+name = "lzma"
+description = "Minimal no_std LZMA1 decoder, fixed to lc=0 lp=0 pb=0 and a 4 KiB dictionary"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
