@@ -7,8 +7,9 @@ to be 100% perfect, I've tried to put little questions when I can't remember per
 some of those questions as time goes on.
 
 ### Required Pre-Reqs
-- #### cmake
-- #### arm-none-eabi-gcc
+- #### rust
+    - The MCU firmware (`mcu/opengdemu`); `rustup` picks up the toolchain
+        and the thumbv7m-none-eabi target from its rust-toolchain.toml
 - #### podman (or docker)
     - Generating Verilog from Amaranth
     - Running Quartus 2
@@ -65,11 +66,6 @@ Might be too slow, never used Verilator before this just sounded like a good exc
 
 ### Projects in Use
 - [Amaranth](https://github.com/amaranth-lang/amaranth) BSD-2-Clause
-- [CMSIS]()
-- [Trice](https://github.com/rokath/trice) MIT
-- [Argon RTOS ](https://github.com/flit/argon-rtos) BSD-3-Clause
-- [FatFS](http://elm-chan.org/fsw/ff/00index_e.html) [FatFS License](http://elm-chan.org/fsw/ff/doc/appnote.html#license)
-- [Microchip ASF](https://github.com/alfred-ai/microchip-asf)
-- [umm_malloc](https://github.com/rhempel/umm_malloc) MIT
+- [embassy](https://github.com/embassy-rs/embassy) (MCU firmware)
 
 Any omissions are not intentional. Please open an issue if you notice any missed attributions.

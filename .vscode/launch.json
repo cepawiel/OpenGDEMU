@@ -6,8 +6,8 @@
     "configurations": [
         {
             "cwd": "${workspaceRoot}",
-            "executable": "./build/CPU/app/mainapp.elf",
-            "name": "Debug SAM3U",
+            "executable": "./mcu/opengdemu/target/thumbv7m-none-eabi/release/opengdemu",
+            "name": "Debug SAM3U (release)",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",
