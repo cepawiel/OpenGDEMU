@@ -304,11 +304,6 @@ Notes:
 - `program … reset exit` leaves the MCU running the new firmware; you do not
   need to power cycle.
 
-The repo also has [`openocd_gdemu.cfg`](openocd_gdemu.cfg) and
-[`gdb_gdemu.cfg`](gdb_gdemu.cfg), which wrap the same settings — they predate
-the current firmware and reference in-tree build paths, so the commands above
-are the supported route.
-
 ---
 
 ## 8. Watch the logs
